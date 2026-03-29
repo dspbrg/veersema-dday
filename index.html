@@ -6,7 +6,13 @@
     <meta name="theme-color" content="#E8DEFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="light-content">
-    <title>D-Day Veersema</title>
+    <title>D-Day Veersema — 19 april</title>
+    <meta name="description" content="Meld je gezin aan en kies alvast wat lekkers voor de familiedag bij Blik & Burgers in Zeist.">
+    <meta property="og:title" content="Veersema D-day 19/4">
+    <meta property="og:description" content="Familiedag bij Blik & Burgers, Zeist. Meld je aan en kies je eten!">
+    <meta property="og:image" content="https://dspbrg.github.io/veersema-dday/img/IMG_1053.jpeg">
+    <meta property="og:url" content="https://dspbrg.github.io/veersema-dday/">
+    <meta property="og:type" content="website">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,7 +43,7 @@
 
         /* === DESIGN TOKENS === */
         :root {
-            --surface:     #E8DEFF;
+            --surface:     #EEE6FF;
             --on-surface:  #1D1A2B;
             --on-surface-var: #5C5470;
             --outline:     #D4C8EF;
@@ -47,7 +53,7 @@
             --on-primary-cont: #3B1A3E;
         }
 
-        html, body {
+        html {
             background-color: #E8DEFF;
         }
         body {
@@ -80,7 +86,7 @@
 
         /* === HEADER — lavender surface, not dark === */
         .app-header {
-            background: #E8DEFF;
+            background: linear-gradient(180deg, #E8DEFF 0%, #EEE6FF 100%);
             position: relative;
             overflow: hidden;
             padding-top: env(safe-area-inset-top, 0px);
@@ -316,7 +322,7 @@
             </div>
 
             <!-- Navigation buttons -->
-            <nav id="main-nav" class="pb-4 flex items-stretch gap-2 max-w-lg mx-auto" style="margin-top:-16px;position:relative;z-index:5;padding:0 20px">
+            <nav id="main-nav" class="pb-4 max-w-lg mx-auto" style="margin-top:-16px;position:relative;z-index:5;padding:0 20px;display:grid;grid-template-columns:1fr 1fr auto;gap:8px">
                 <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="nav-btn active flex-1">
                     Aanmeldingen <span id="nav-count" class="nav-count">0</span>
                 </button>
