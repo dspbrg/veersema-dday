@@ -2,9 +2,10 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#E8DEFF">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="light-content">
     <title>D-Day Veersema</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,26 +83,31 @@
             background: linear-gradient(180deg, #E8DEFF 0%, #F3EEFF 100%);
             position: relative;
             overflow: hidden;
+            padding-top: env(safe-area-inset-top, 0px);
         }
 
         /* === NAV BUTTONS (pill chips) === */
         .nav-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 5px;
-            padding: 10px 14px;
-            font-size: 13px;
+            padding: 12px 18px;
+            font-size: 14px;
             white-space: nowrap;
-            font-weight: 300;
-            letter-spacing: .02em;
+            font-weight: 400;
+            letter-spacing: .01em;
             border-radius: 9999px;
-            transition: all .2s ease;
-            background: rgba(107,58,110,.08);
-            color: #6B3A6E;
+            transition: background .15s ease, color .15s ease;
+            background: white;
+            color: #5C5470;
+            box-shadow: 0 1px 4px rgba(59,26,62,.06);
         }
         .nav-btn.active {
-            background: #6B3A6E;
-            color: white;
+            background: white;
+            color: #3B1A3E;
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(59,26,62,.1);
         }
         .nav-count {
             display: inline-flex;
@@ -111,13 +117,10 @@
             height: 20px;
             padding: 0 6px;
             border-radius: 9999px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            background: rgba(255,255,255,.25);
-        }
-        .nav-btn:not(.active) .nav-count {
-            background: rgba(107,58,110,.12);
-            color: #6B3A6E;
+            background: #6B3A6E;
+            color: white;
         }
 
         /* === CARDS — white, 20px radius, soft shadow === */
