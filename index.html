@@ -462,17 +462,15 @@
                 <p class="ts-title-lg mb-1.5" style="color:var(--on-surface)">Nog geen aanmeldingen</p>
                 <p class="ts-body-sm max-w-[260px] mx-auto" style="color:var(--on-surface-var)">Zodra gezinnen zich aanmelden verschijnt hier het overzicht.</p>
             </div>
+        </main>
+
+        <!-- TAB 2: OVERZICHT (gasten + gerechten + excel) -->
+        <main id="view-overzicht" class="max-w-lg mx-auto px-5 pt-6 pb-40 hidden">
+            <div id="overzicht-content"></div>
             <div id="summary-section" class="hidden">
                 <div class="card p-6 mb-5"><div id="summary-content"></div></div>
             </div>
-        </main>
-
-        <!-- TAB 2: OVERZICHT (gasten totaal + excel) -->
-        <main id="view-overzicht" class="max-w-lg mx-auto px-5 pt-6 pb-40 hidden">
-            <div id="overzicht-content"></div>
             <div class="card p-6 mb-5">
-                <h2 class="text-base font-medium mb-3" style="color:#3B1A3E">Download voor het restaurant</h2>
-                <p class="ts-body-sm mb-4" style="color:var(--on-surface-var)">Alle bestellingen, gerechten per categorie en dieetwensen in één Excel bestand.</p>
                 <button onclick="downloadExcel()" class="w-full btn-outlined font-light py-4 flex items-center justify-center gap-2"><span class="material-symbols-rounded" style="font-size:20px">download</span> Download als Excel</button>
             </div>
         </main>
