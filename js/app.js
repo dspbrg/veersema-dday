@@ -117,29 +117,35 @@ function cancelForm(){if(formState.persons.length||formState.familyName){if(!con
 function closeForm(){document.getElementById('view-form').classList.add('hidden');document.getElementById('app-header').classList.remove('hidden');document.getElementById('header-fade').classList.remove('hidden');document.getElementById('content-area').classList.remove('hidden');document.getElementById('fab-add').classList.remove('hidden');showTab('aanmelden');window.scrollTo({top:0,behavior:'smooth'})}
 
 // === STAP 1 ===
-function addMember(){const ni=document.getElementById('new-member-name'),ts=document.getElementById('new-member-type'),nm=ni.value.trim();if(!nm){showToast('Vul eerst een naam in','touch_app');ni.focus();return}formState.persons.push({id:++personIdCounter,name:nm,isKind:ts.value==='kind',lunch:'',hoofdgerecht:'',vegetarisch:false,opBrood:false,extras:[],opmerkingen:''});ni.value='';ni.focus();ts.value='adult';renderMembersList();updateStep1UI()}
+function addMember(){const ni=document.getElementById('new-member-name'),ts=document.getElementById('new-member-type'),nm=ni.value.trim();if(!nm){showToast('Vul eerst een naam in','touch_app');ni.focus();return}formState.persons.push({id:++personIdCounter,name:nm,isKind:ts.value==='kind',isBaby:ts.value==='baby',lunch:'',hoofdgerecht:'',vegetarisch:false,opBrood:false,extras:[],opmerkingen:''});ni.value='';ni.focus();ts.value='adult';renderMembersList();updateStep1UI()}
 function removeMember(id){formState.persons=formState.persons.filter(p=>p.id!==id);renderMembersList();updateStep1UI()}
 function renderMembersList(){
     const l=document.getElementById('members-list');
     if(!formState.persons.length){l.innerHTML='<p class="ts-body-sm text-surf-onvar/50 italic py-2">Voeg hieronder de eerste eter toe</p>';return}
-    l.innerHTML=formState.persons.map(p=>`
-        <div class="flex items-center gap-3 py-2.5 px-4 rounded-xl bg-white border-l-[3px] ${p.isKind?'border-l-lav-400':'border-l-rose-300'} fade-in">
-            <div class="w-7 h-7 rounded-full flex items-center justify-center text-sm shrink-0 ${p.isKind?'bg-lav-100':'bg-rose-100'}">${p.isKind?micon('child_care',18,'#8B5A8E'):micon('person',18,'#6B3A6E')}</div>
-            <div class="flex-1"><span class="ts-title-sm text-surf-on">${esc(p.name)}</span> <span class="ts-label-sm text-surf-onvar ml-1">${p.isKind?'Kind':'Volwassene'}</span></div>
+    l.innerHTML=formState.persons.map(p=>{
+        const icon=p.isBaby?micon('child_friendly',18,'#A98ADB'):p.isKind?micon('child_care',18,'#8B5A8E'):micon('person',18,'#6B3A6E');
+        const bg=p.isBaby?'bg-lav-50':p.isKind?'bg-lav-100':'bg-rose-100';
+        const border=p.isBaby?'border-l-lav-300':p.isKind?'border-l-lav-400':'border-l-rose-300';
+        const label=p.isBaby?'Baby':p.isKind?'Kind':'Volwassene';
+        return`<div class="flex items-center gap-3 py-2.5 px-4 rounded-xl bg-white border-l-[3px] ${border} fade-in">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center text-sm shrink-0 ${bg}">${icon}</div>
+            <div class="flex-1"><span class="ts-title-sm text-surf-on">${esc(p.name)}</span> <span class="ts-label-sm text-surf-onvar ml-1">${label}</span></div>
             <button onclick="removeMember(${p.id})" class="p-3 text-surf-onvar/30 hover:text-red-500 transition-colors shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-        </div>`).join('');
+        </div>`}).join('');
 }
 function updateStep1UI(){document.getElementById('btn-to-step2').disabled=!(document.getElementById('family-name').value.trim()&&formState.persons.length)}
 
 // === STAP 2 ===
 function renderPersonTabs(){
-    document.getElementById('person-tabs').innerHTML=formState.persons.map((p,i)=>{const a=i===currentPersonIndex,d=p.lunch||p.hoofdgerecht;return`<button onclick="selectPerson(${i})" class="shrink-0 px-4 py-2 rounded-full ts-label-md transition-all whitespace-nowrap ${a?'bg-pur text-white shadow-sm':d?'bg-rose-100 text-pur':'bg-lav-100 text-surf-onvar'}"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle">${p.isKind?'child_care':'person'}</span> ${esc(p.name)}${d?' <span class="material-symbols-rounded" style="font-size:14px;vertical-align:middle">check</span>':''}</button>`}).join('');
+    document.getElementById('person-tabs').innerHTML=formState.persons.map((p,i)=>{const a=i===currentPersonIndex,d=p.isBaby||p.lunch||p.hoofdgerecht;const icon=p.isBaby?'child_friendly':p.isKind?'child_care':'person';return`<button onclick="selectPerson(${i})" class="shrink-0 px-4 py-2 rounded-full ts-label-md transition-all whitespace-nowrap ${a?'bg-pur text-white shadow-sm':d?'bg-rose-100 text-pur':'bg-lav-100 text-surf-onvar'}"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle">${icon}</span> ${esc(p.name)}${d?' <span class="material-symbols-rounded" style="font-size:14px;vertical-align:middle">check</span>':''}</button>`}).join('');
     setTimeout(()=>{const t=document.getElementById('person-tabs');if(t.children[currentPersonIndex])t.children[currentPersonIndex].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})},50);
     document.getElementById('person-counter').textContent=`${formState.familyName} — ${currentPersonIndex+1} van ${formState.persons.length}`;
 }
 function selectPerson(i){savePersonFromDOM();currentPersonIndex=i;renderPersonTabs();renderPersonMenu();updatePersonNav();document.getElementById('person-menu-container').scrollIntoView({behavior:'smooth',block:'start'})}
 function renderPersonMenu(){
-    const p=formState.persons[currentPersonIndex];if(!p)return;const k=p.isKind;
+    const p=formState.persons[currentPersonIndex];if(!p)return;
+    if(p.isBaby){document.getElementById('person-menu-container').innerHTML=`<div class="card p-6 text-center fade-in"><div class="w-16 h-16 mx-auto mb-4 rounded-full bg-lav-50 flex items-center justify-center">${micon('child_friendly',32,'#A98ADB')}</div><p class="ts-title-md text-surf-on mb-1">${esc(p.name)}</p><p class="ts-body-sm text-surf-onvar">Eet niet mee — geen menukeuze nodig</p></div>`;return}
+    const k=p.isKind;
     document.getElementById('person-menu-container').innerHTML=`
         <div class="person-card ${k?'kind':''} p-5 fade-in">
             <div class="flex items-center gap-3 mb-6">
