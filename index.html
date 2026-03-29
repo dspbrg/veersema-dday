@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#E8DEFF">
+    <meta name="theme-color" content="#E4D8FB">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="light-content">
     <title>D-Day Veersema</title>
@@ -49,6 +49,20 @@
 
         html {
             background: #E8DEFF;
+            background-color: #E8DEFF;
+        }
+        /* Ensure color reaches behind status bar / dynamic island */
+        body::before {
+            content: '';
+            display: block;
+            position: fixed;
+            top: -100px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: #E8DEFF;
+            z-index: 9999;
+            pointer-events: none;
         }
         body {
             background: var(--surface);
