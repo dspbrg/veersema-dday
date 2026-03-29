@@ -51,7 +51,7 @@ function showTab(t){
         if(btn)btn.className='nav-btn'+(t===id?' active':'');
     });
     const fab=document.getElementById('fab-add');
-    if(fab)fab.classList.remove('hidden');
+    if(fab)fab.classList.toggle('hidden',t!=='aanmelden');
     renderOverview();renderRestaurant();updateNavCount();
 }
 function updateNavCount(){
