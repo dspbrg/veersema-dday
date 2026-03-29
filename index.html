@@ -43,7 +43,7 @@
 
         /* === DESIGN TOKENS === */
         :root {
-            --surface:     #EEE6FF;
+            --surface:     #E8DEFF;
             --on-surface:  #1D1A2B;
             --on-surface-var: #5C5470;
             --outline:     #D4C8EF;
@@ -86,7 +86,7 @@
 
         /* === HEADER — lavender surface, not dark === */
         .app-header {
-            background: linear-gradient(180deg, #E8DEFF 0%, #EEE6FF 100%);
+            background: #E8DEFF;
             position: relative;
             overflow: hidden;
             padding-top: env(safe-area-inset-top, 0px);
@@ -322,18 +322,19 @@
             </div>
 
             <!-- Navigation buttons -->
-            <nav id="main-nav" class="pb-4" style="margin-top:-16px;position:relative;z-index:5;display:grid;grid-template-columns:1fr 1fr auto;gap:8px">
-                <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="nav-btn active flex-1">
-                    Aanmeldingen <span id="nav-count" class="nav-count">0</span>
-                </button>
-                <button onclick="showTab('overzicht')" id="tab-overzicht" class="nav-btn flex-1">
-                    Overzicht
-                </button>
-                <button onclick="showTab('info')" id="tab-info" class="nav-btn" style="padding:12px 14px">
-                    <span class="material-symbols-rounded" style="font-size:20px">info</span>
-                </button>
-            </nav>
         </div>
+        <!-- Nav outside the px-5 container, with own matching padding -->
+        <nav id="main-nav" class="pb-4 max-w-lg mx-auto" style="margin-top:-16px;position:relative;z-index:5;display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:0 20px">
+            <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="nav-btn active">
+                Aanmeldingen <span id="nav-count" class="nav-count">0</span>
+            </button>
+            <button onclick="showTab('overzicht')" id="tab-overzicht" class="nav-btn">
+                Overzicht
+            </button>
+            <button onclick="showTab('info')" id="tab-info" class="nav-btn" style="padding:12px 14px">
+                <span class="material-symbols-rounded" style="font-size:20px">info</span>
+            </button>
+        </nav>
     </div>
 
     <!-- Clean divider instead of gradient fade -->
@@ -418,26 +419,35 @@
     </script>
 
     <!-- ===== CONTENT ===== -->
-    <!-- Parallax floating shapes -->
-    <div id="parallax-shapes" style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden">
-        <div class="pshape" data-speed="0.3" style="top:15%;left:8%;width:28px;height:28px;clip-path:url(#shape-sunny);background:#F5B731;opacity:.15"></div>
-        <div class="pshape" data-speed="0.2" style="top:35%;right:6%;width:22px;height:22px;clip-path:url(#shape-4cookie);background:#E991C8;opacity:.12"></div>
-        <div class="pshape" data-speed="0.4" style="top:55%;left:12%;width:18px;height:18px;clip-path:url(#shape-6cookie);background:#D4C8EF;opacity:.18"></div>
-        <div class="pshape" data-speed="0.15" style="top:70%;right:15%;width:32px;height:32px;clip-path:url(#shape-7cookie);background:#F5B731;opacity:.1"></div>
-        <div class="pshape" data-speed="0.35" style="top:85%;left:5%;width:24px;height:24px;clip-path:url(#shape-sunny);background:#E991C8;opacity:.13"></div>
-        <div class="pshape" data-speed="0.25" style="top:45%;left:75%;width:20px;height:20px;clip-path:url(#shape-4cookie);background:#C0AAEE;opacity:.14"></div>
-        <div class="pshape" data-speed="0.5" style="top:95%;right:25%;width:16px;height:16px;clip-path:url(#shape-sunny);background:#D4C8EF;opacity:.16"></div>
-    </div>
+    <!-- Parallax shapes rendered as inline SVGs (clip-path doesn't work on fixed elements in Safari) -->
+    <div id="parallax-shapes" style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden"></div>
     <script>
     (function(){
-        const shapes=document.querySelectorAll('.pshape');
-        const origins=Array.from(shapes).map(s=>parseFloat(s.style.top));
+        function cookieSVG(N,R,A,size,color){
+            let pts='';
+            for(let i=0;i<=72;i++){const t=(i/72)*Math.PI*2;const r=R+A*Math.cos(N*t);pts+=`${(0.5+r*Math.cos(t))*size},${(0.5+r*Math.sin(t))*size} `}
+            return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><polygon points="${pts}" fill="${color}"/></svg>`;
+        }
+        const defs=[
+            {x:'8%',  y:300, speed:0.3, n:8, r:.38,a:.10, size:28, color:'rgba(245,183,49,.18)'},
+            {x:'85%', y:600, speed:0.2, n:4, r:.40,a:.08, size:22, color:'rgba(233,145,200,.15)'},
+            {x:'12%', y:900, speed:0.4, n:6, r:.42,a:.06, size:20, color:'rgba(212,200,239,.2)'},
+            {x:'80%', y:1200,speed:0.15,n:7, r:.42,a:.05, size:32, color:'rgba(245,183,49,.12)'},
+            {x:'5%',  y:1500,speed:0.35,n:8, r:.38,a:.10, size:24, color:'rgba(233,145,200,.16)'},
+            {x:'72%', y:800, speed:0.25,n:4, r:.40,a:.08, size:18, color:'rgba(192,170,238,.16)'},
+            {x:'20%', y:1800,speed:0.5, n:6, r:.42,a:.06, size:16, color:'rgba(212,200,239,.18)'},
+        ];
+        const container=document.getElementById('parallax-shapes');
+        const els=defs.map(d=>{
+            const div=document.createElement('div');
+            div.style.cssText=`position:absolute;left:${d.x};top:${d.y}px;`;
+            div.innerHTML=cookieSVG(d.n,d.r,d.a,d.size,d.color);
+            container.appendChild(div);
+            return {el:div,originY:d.y,speed:d.speed};
+        });
         window.addEventListener('scroll',()=>{
             const sy=window.scrollY;
-            shapes.forEach((s,i)=>{
-                const speed=parseFloat(s.dataset.speed);
-                s.style.transform=`translateY(${-sy*speed}px)`;
-            });
+            els.forEach(s=>s.el.style.transform=`translateY(${-sy*s.speed}px)`);
         },{passive:true});
     })();
     </script>
