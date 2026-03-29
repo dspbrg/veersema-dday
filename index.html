@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#E8DEFF">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>D-Day Veersema</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -392,7 +394,7 @@
     <div id="content-area">
 
         <!-- TAB 1: AANMELDEN -->
-        <main id="view-aanmelden" class="max-w-lg mx-auto px-5 pt-6 pb-32">
+        <main id="view-aanmelden" class="max-w-lg mx-auto px-5 pt-6 pb-40">
             <div id="orders-container" class="space-y-3 mb-4"></div>
             <div id="empty-state" class="text-center py-12 fade-in">
                 <div class="w-20 h-20 mx-auto mb-5 empty-state-icon flex items-center justify-center" style="clip-path:url(#shape-4cookie)"><span class="material-symbols-rounded" style="font-size:40px;color:#6B3A6E">restaurant</span></div>
@@ -402,7 +404,7 @@
         </main>
 
         <!-- TAB 2: OVERZICHT -->
-        <main id="view-overzicht" class="max-w-lg mx-auto px-5 pt-6 pb-32 hidden">
+        <main id="view-overzicht" class="max-w-lg mx-auto px-5 pt-6 pb-40 hidden">
             <div id="restaurant-empty" class="text-center py-10 fade-in">
                 <div class="w-20 h-20 mx-auto mb-5 empty-state-icon flex items-center justify-center" style="clip-path:url(#shape-6cookie)"><span class="material-symbols-rounded" style="font-size:40px;color:#6B3A6E">list_alt</span></div>
                 <p class="ts-title-lg mb-1.5" style="color:var(--on-surface)">Nog geen aanmeldingen</p>
@@ -416,7 +418,7 @@
         </main>
 
         <!-- TAB 3: INFO -->
-        <main id="view-info" class="max-w-lg mx-auto px-5 pt-5 pb-32 hidden">
+        <main id="view-info" class="max-w-lg mx-auto px-5 pt-5 pb-40 hidden">
             <div class="card p-6 mb-4">
                 <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">location_on</span> Locatie</h2>
                 <div class="text-sm space-y-3" style="color:#5C5470">
@@ -444,7 +446,7 @@
     </div>
 
     <!-- Big CTA -->
-    <div id="fab-add" class="fixed bottom-6 left-0 right-0 z-40" style="padding-left:20px;padding-right:20px">
+    <div id="fab-add" class="fixed left-0 right-0 z-40" style="padding-left:20px;padding-right:20px;bottom:max(24px, env(safe-area-inset-bottom, 24px))">
         <button onclick="startNewOrder()" class="w-full max-w-lg mx-auto h-16 rounded-full text-white text-lg font-light flex items-center justify-center gap-2 transition-transform active:scale-[.97]" style="background:#6B3A6E;box-shadow:0 4px 20px rgba(59,26,62,.35);display:flex;letter-spacing:.02em">
             Aanmelden
         </button>
@@ -511,6 +513,30 @@
 
     <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 text-white px-6 py-3 text-sm font-medium shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50"></div>
     <div id="download-section" class="hidden"></div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+    // =============================================================
+    //  VUL HIER JE SUPABASE CONFIG IN
+    //  (Supabase Dashboard > Project Settings > API)
+    // =============================================================
+    const SUPABASE_URL  = 'JOUW_SUPABASE_URL';   // bijv. https://xxxx.supabase.co
+    const SUPABASE_KEY  = 'JOUW_ANON_KEY';        // de "anon public" key
+
+    let sb = null;
+    try {
+        if (!SUPABASE_URL.startsWith('JOUW_')) {
+            sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('[Supabase] Verbonden');
+        } else {
+            console.warn('[Supabase] Config bevat placeholders — localStorage fallback');
+        }
+    } catch(e) {
+        console.error('[Supabase] Init mislukt:', e);
+    }
+    </script>
+
     <script src="js/app.js"></script>
 </body>
 </html>

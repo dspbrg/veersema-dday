@@ -195,9 +195,54 @@ function showStep(s){
     for(let i=1;i<=3;i++){const d=document.getElementById(`step-dot-${i}`);d.className=`step-dot ${i<s?'done':i===s?'active':'upcoming'}`;if(i<s){d.innerHTML='<span class="material-symbols-rounded" style="font-size:16px;color:white">check</span>'}else{d.textContent=i};const l=document.getElementById(`step-label-${i}`);l.style.color=i===s?'#6B3A6E':i<s?'#8B5A8E':'';l.style.fontWeight=i<=s?'600':'';if(i<3)document.getElementById(`step-line-${i}`).className=`step-line ${i<s?'done':'upcoming'}`}
 }
 
-// === DATA ===
-function getOrders(){try{return JSON.parse(localStorage.getItem('dday-orders'))||[]}catch(e){return[]}}
-function saveOrders(o){localStorage.setItem('dday-orders',JSON.stringify(o))}
+// === DATA (Supabase realtime + localStorage fallback) ===
+// Supabase tabel: "orders" met kolommen: id (int8, auto), family_name (text), data (jsonb), updated_at (timestamptz)
+
+let _ordersCache = null;
+
+function getOrders() {
+    if (_ordersCache !== null) return _ordersCache;
+    try { return JSON.parse(localStorage.getItem('dday-orders')) || []; } catch(e) { return []; }
+}
+
+async function saveOrders(orders) {
+    localStorage.setItem('dday-orders', JSON.stringify(orders));
+    _ordersCache = orders;
+    if (!sb) return;
+    try {
+        // Wis tabel en schrijf alles opnieuw (simpel voor kleine dataset)
+        await sb.from('orders').delete().neq('id', 0);
+        if (orders.length) {
+            const rows = orders.map(o => ({ family_name: o.familyName, data: o }));
+            await sb.from('orders').insert(rows);
+        }
+    } catch(e) { console.error('[Supabase] Schrijven mislukt:', e); }
+}
+
+async function _loadFromSupabase() {
+    if (!sb) return;
+    try {
+        const { data, error } = await sb.from('orders').select('data').order('id');
+        if (error) throw error;
+        const orders = (data || []).map(r => r.data);
+        localStorage.setItem('dday-orders', JSON.stringify(orders));
+        _ordersCache = orders;
+        renderOverview();
+        renderRestaurant();
+    } catch(e) { console.error('[Supabase] Laden mislukt:', e); }
+}
+
+function _initSupabaseRealtime() {
+    if (!sb) return;
+    sb.channel('orders-sync')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+            _loadFromSupabase();
+        })
+        .subscribe();
+    _loadFromSupabase();
+}
+
+document.addEventListener('DOMContentLoaded', () => { _initSupabaseRealtime(); });
 function deleteOrder(idx){const orders=getOrders();lastDeleted={order:orders[idx],index:idx};orders.splice(idx,1);saveOrders(orders);renderOverview();renderRestaurant();clearTimeout(deleteTimer);const t=document.getElementById('toast');t.innerHTML=`${micon('delete',18,'#ffffff')}&nbsp;Verwijderd <button onclick="undoDelete()" style="margin-left:12px;text-decoration:underline;font-weight:600">Ongedaan maken</button>`;t.classList.remove('opacity-0','translate-y-4');t.classList.add('opacity-100','translate-y-0');t.style.pointerEvents='auto';deleteTimer=setTimeout(()=>{lastDeleted=null;t.classList.add('opacity-0','translate-y-4');t.classList.remove('opacity-100','translate-y-0');t.style.pointerEvents='none'},5000)}
 function undoDelete(){if(!lastDeleted)return;clearTimeout(deleteTimer);const orders=getOrders();orders.splice(lastDeleted.index,0,lastDeleted.order);saveOrders(orders);lastDeleted=null;renderOverview();renderRestaurant();showToast('Hersteld!','undo')}
 
