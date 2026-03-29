@@ -184,7 +184,7 @@ function renderReview(){
         </button>`}).join('');
 }
 function saveOrder(){
-    savePersonFromDOM();const inc=formState.persons.filter(p=>!p.hoofdgerecht);
+    savePersonFromDOM();const inc=formState.persons.filter(p=>!p.isBaby&&!p.hoofdgerecht);
     if(inc.length){const nm=inc.map(p=>p.name).join(', ');if(!confirm(`${nm} ${inc.length===1?'heeft':'hebben'} nog niks gekozen.\n\nToch opslaan?`))return}
     const data={familyName:formState.familyName,persons:formState.persons.map(p=>({name:p.name,isKind:p.isKind,lunch:p.lunch,hoofdgerecht:p.hoofdgerecht,vegetarisch:p.vegetarisch,opBrood:p.opBrood,extras:[...p.extras],opmerkingen:p.opmerkingen})),timestamp:new Date().toISOString()};
     const orders=getOrders();if(editingOrderIndex>=0)orders[editingOrderIndex]=data;else orders.push(data);saveOrders(orders);
