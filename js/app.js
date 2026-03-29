@@ -63,9 +63,10 @@ function toggleInfo(){const c=document.getElementById('info-content'),ch=documen
 
 // === AANMELDEN ===
 function renderOverview(){
-    const orders=getOrders(),c=document.getElementById('orders-container'),e=document.getElementById('empty-state');
-    if(!orders.length){c.innerHTML='';e.classList.remove('hidden');return}
-    e.classList.add('hidden');
+    const orders=getOrders(),c=document.getElementById('orders-container');
+    const re=document.getElementById('restaurant-empty');
+    if(!orders.length){c.innerHTML='';if(re)re.classList.remove('hidden');return}
+    if(re)re.classList.add('hidden');
     c.innerHTML=orders.map((o,idx)=>`
         <div class="card order-card px-5 py-4 fade-in" onclick="editOrder(${idx})">
             <div class="flex justify-between items-center">
