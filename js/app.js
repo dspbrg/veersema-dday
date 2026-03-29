@@ -97,13 +97,16 @@ function renderRestaurant(){
     const hD=Object.entries(dc).filter(([n])=>!skipNames.includes(n.replace(' (vega)','').replace(' (op brood)',''))).sort((a,b)=>b[1]-a[1]);
     const opm=orders.flatMap(o=>o.persons.filter(p=>p.opmerkingen).map(p=>({naam:p.name,tekst:p.opmerkingen})));
     document.getElementById('summary-content').innerHTML=`
-        <div class="stat-card flex items-center gap-5 mb-7 py-5 px-6">
-            <div class="text-4xl font-extrabold text-pur tracking-tight">${allP.length}</div>
-            <div><div class="ts-title-md text-lav-900">Gasten</div><div class="ts-body-sm text-surf-onvar mt-0.5">${allP.filter(p=>!p.isKind).length} volwassenen · ${allP.filter(p=>p.isKind).length} kinderen</div><div class="ts-label-sm text-surf-onvar/50 mt-1">${orders.length} gezinnen</div></div>
-        </div>
         ${hD.length?`<div class="mb-6"><h4 class="section-header mb-2.5 px-1 flex items-center gap-1.5">${micon('restaurant',16,'#8B5A8E')} Hoofdgerecht</h4><div class="space-y-0.5">${hD.map(([n,c])=>row(n,c)).join('')}</div></div>`:''}
         ${eD.length?`<div class="mb-6"><h4 class="section-header mb-2.5 px-1 flex items-center gap-1.5">${micon('add_circle',16,'#8B5A8E')} Extra's</h4><div class="space-y-0.5">${eD.map(([n,c])=>row(n,c)).join('')}</div></div>`:''}
         ${opm.length?`<div class="pt-5 border-t border-lav-200/40"><h4 class="section-header mb-3 px-1 flex items-center gap-1.5">${micon('edit_note',16,'#8B5A8E')} Dieetwensen</h4><div class="space-y-2">${opm.map(o=>`<div class="flex gap-2 py-2 px-3.5 bg-lav-50 rounded-xl"><span class="ts-label-lg text-surf-on shrink-0">${esc(o.naam)}:</span><span class="ts-body-md text-surf-onvar">${esc(o.tekst)}</span></div>`).join('')}</div></div>`:''}`;
+
+    // Gasten totaal op overzicht tab
+    const oc=document.getElementById('overzicht-content');
+    if(oc)oc.innerHTML=orders.length?`<div class="stat-card flex items-center gap-5 mb-5 py-5 px-6">
+        <div class="text-4xl font-extrabold text-pur tracking-tight">${allP.length}</div>
+        <div><div class="ts-title-md text-lav-900">Gasten</div><div class="ts-body-sm text-surf-onvar mt-0.5">${allP.filter(p=>!p.isKind).length} volwassenen · ${allP.filter(p=>p.isKind).length} kinderen</div><div class="ts-label-sm text-surf-onvar/50 mt-1">${orders.length} gezinnen</div></div>
+    </div>`:'';
 }
 
 // === FORM ===
