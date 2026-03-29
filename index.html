@@ -47,22 +47,8 @@
             --on-primary-cont: #3B1A3E;
         }
 
-        html {
-            background: #E8DEFF;
+        html, body {
             background-color: #E8DEFF;
-        }
-        /* Ensure color reaches behind status bar / dynamic island */
-        body::before {
-            content: '';
-            display: block;
-            position: fixed;
-            top: -100px;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: #E8DEFF;
-            z-index: 9999;
-            pointer-events: none;
         }
         body {
             background: var(--surface);
