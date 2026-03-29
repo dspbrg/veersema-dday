@@ -95,19 +95,17 @@
             padding: 12px 18px;
             font-size: 14px;
             white-space: nowrap;
-            font-weight: 400;
+            font-weight: 500;
             letter-spacing: .01em;
             border-radius: 9999px;
-            transition: background .15s ease, color .15s ease;
             background: white;
             color: #5C5470;
             box-shadow: 0 1px 4px rgba(59,26,62,.06);
         }
         .nav-btn.active {
-            background: white;
-            color: #3B1A3E;
-            font-weight: 600;
-            box-shadow: 0 1px 4px rgba(59,26,62,.1);
+            background: #6B3A6E;
+            color: white;
+            font-weight: 500;
         }
         .nav-count {
             display: inline-flex;
@@ -120,6 +118,10 @@
             font-size: 11px;
             font-weight: 600;
             background: #6B3A6E;
+            color: white;
+        }
+        .nav-btn.active .nav-count {
+            background: rgba(255,255,255,.3);
             color: white;
         }
 
@@ -319,7 +321,7 @@
                     Aanmeldingen <span id="nav-count" class="nav-count">0</span>
                 </button>
                 <button onclick="showTab('overzicht')" id="tab-overzicht" class="nav-btn flex-1">
-                    Overzicht
+                    Overzicht (Bas)
                 </button>
                 <button onclick="showTab('info')" id="tab-info" class="nav-btn">
                     <span class="material-symbols-rounded" style="font-size:18px">info</span>
