@@ -71,7 +71,7 @@ function renderOverview(){
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0" style="background:linear-gradient(135deg,#FFE8F7,#E8DEFF)">${micon('group',22,'#6B3A6E')}</div>
-                    <div><h3 class="ts-title-md text-surf-on">${esc(o.familyName)}</h3><span class="ts-label-sm text-surf-onvar">${o.persons.length} personen</span></div>
+                    <div><h3 class="ts-title-md text-surf-on">${esc(o.familyName)}</h3><span class="ts-label-sm text-surf-onvar">${o.persons.length} ${o.persons.length===1?'persoon':'personen'}</span></div>
                 </div>
                 <div class="flex items-center gap-1 shrink-0">
                     <span class="ts-label-sm text-pur">Wijzig</span>
