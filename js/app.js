@@ -220,8 +220,8 @@ async function saveOrders(orders) {
     localStorage.setItem('dday-orders', JSON.stringify(orders));
     _ordersCache = orders;
     if (!sb) return;
+    _justSaved=true;
     try {
-        // Wis tabel en schrijf alles opnieuw (simpel voor kleine dataset)
         await sb.from('orders').delete().neq('id', 0);
         if (orders.length) {
             const rows = orders.map(o => ({ family_name: o.familyName, data: o }));
@@ -244,11 +244,18 @@ async function _loadFromSupabase() {
     } catch(e) { console.error('[Supabase] Laden mislukt:', e); }
 }
 
+let _syncTimer=null;
+let _justSaved=false;
+function _debouncedLoad(){
+    if(_justSaved){_justSaved=false;return}
+    clearTimeout(_syncTimer);
+    _syncTimer=setTimeout(()=>_loadFromSupabase(),500);
+}
 function _initSupabaseRealtime() {
     if (!sb) return;
     sb.channel('orders-sync')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
-            _loadFromSupabase();
+            _debouncedLoad();
         })
         .subscribe();
     _loadFromSupabase();
