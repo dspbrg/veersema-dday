@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#E4D8FB">
+    <meta name="theme-color" content="#E8DEFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="light-content">
     <title>D-Day Veersema</title>
@@ -331,15 +331,14 @@
 
             <!-- Navigation buttons -->
             <nav id="main-nav" class="pb-4 flex items-center gap-2" style="margin-top:-16px;position:relative;z-index:5">
-                <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="nav-btn active flex-1">
+                <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="nav-btn active">
                     Aanmeldingen <span id="nav-count" class="nav-count">0</span>
                 </button>
-                <button onclick="showTab('overzicht')" id="tab-overzicht" class="nav-btn flex-1">
-                    Overzicht (Bas)
+                <button onclick="showTab('overzicht')" id="tab-overzicht" class="nav-btn">
+                    Overzicht
                 </button>
-                <button onclick="showTab('info')" id="tab-info" class="nav-btn">
-                    <span class="material-symbols-rounded" style="font-size:18px">info</span>
-                    Info
+                <button onclick="showTab('info')" id="tab-info" class="nav-btn" style="padding:12px;min-width:44px">
+                    <span class="material-symbols-rounded" style="font-size:20px">info</span>
                 </button>
             </nav>
         </div>
@@ -452,26 +451,26 @@
 
         <!-- TAB 3: INFO -->
         <main id="view-info" class="max-w-lg mx-auto px-5 pt-5 pb-40 hidden">
-            <div class="card p-6 mb-4">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">location_on</span> Locatie</h2>
-                <div class="text-sm space-y-3" style="color:#5C5470">
-                    <p><strong style="color:#3B1A3E">Restaurant Blik & Burgers</strong><br>Filosofenlaantje 9, Zeist</p>
-                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#6B3A6E;vertical-align:middle">local_parking</span> Gratis parkeren bij de P van Slot Zeist<br><span class="text-xs">Voor navigatie: "Brouwerij" Zeist aanhouden</span></p>
+            <div class="card p-6 mb-3">
+                <h2 class="text-base font-medium mb-3" style="color:#3B1A3E">Locatie</h2>
+                <div class="text-sm font-light space-y-2" style="color:#5C5470;line-height:1.6">
+                    <p><span class="font-medium" style="color:#3B1A3E">Restaurant Blik & Burgers</span><br>Filosofenlaantje 9, Zeist</p>
+                    <p>Gratis parkeren bij de P van Slot Zeist<br><span class="text-xs" style="color:#8B5A8E">Navigatie: "Brouwerij" Zeist aanhouden</span></p>
                 </div>
             </div>
-            <div class="card p-6 mb-4">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">attractions</span> Wat is er te doen?</h2>
-                <div class="text-sm space-y-2" style="color:#5C5470">
-                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#8B5A8E;vertical-align:middle">park</span> Groot terras</p>
-                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#8B5A8E;vertical-align:middle">toys</span> Speeltuin voor de kleintjes</p>
-                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#8B5A8E;vertical-align:middle">skateboarding</span> Skatebaan — neem skates, fietsjes of stepjes mee!</p>
+            <div class="card p-6 mb-3">
+                <h2 class="text-base font-medium mb-3" style="color:#3B1A3E">Wat is er te doen?</h2>
+                <div class="text-sm font-light space-y-1.5" style="color:#5C5470;line-height:1.6">
+                    <p>Groot terras</p>
+                    <p>Speeltuin voor de kleintjes</p>
+                    <p>Skatebaan — neem skates, fietsjes of stepjes mee</p>
                 </div>
             </div>
             <div class="card p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">schedule</span> Programma</h2>
-                <div class="text-sm space-y-2" style="color:#5C5470">
-                    <div class="flex gap-3"><span class="font-semibold shrink-0" style="color:#6B3A6E">12:00</span><span>Ontvangst met 12 uurtje</span></div>
-                    <div class="flex gap-3"><span class="font-semibold shrink-0" style="color:#6B3A6E">Daarna</span><span>Hoofdgerecht van de groepskaart</span></div>
+                <h2 class="text-base font-medium mb-3" style="color:#3B1A3E">Programma</h2>
+                <div class="text-sm font-light space-y-1.5" style="color:#5C5470;line-height:1.6">
+                    <div class="flex gap-4"><span class="font-medium shrink-0" style="color:#6B3A6E">12:00</span><span>Ontvangst met 12 uurtje</span></div>
+                    <div class="flex gap-4"><span class="font-medium shrink-0" style="color:#6B3A6E">Daarna</span><span>Hoofdgerecht van de groepskaart</span></div>
                 </div>
             </div>
         </main>
