@@ -74,7 +74,7 @@
 
         /* === HEADER — lavender surface, not dark === */
         .app-header {
-            background: #E8DEFF;
+            background: linear-gradient(180deg, #E8DEFF 0%, #F3EEFF 100%);
             position: relative;
             overflow: hidden;
         }
@@ -289,8 +289,9 @@
             <!-- Photo in M3 shape — overlaps title intentionally -->
             <div class="flex justify-center mb-4 relative" style="margin-top:-24px">
                 <div class="absolute -top-2 right-[15%] w-8 h-8 z-10" style="clip-path:url(#shape-6cookie);background:#E991C8;opacity:.3"></div>
-                <div id="header-photo" class="w-[440px] h-[440px] overflow-hidden relative" style="clip-path:url(#shape-sunny)">
-                    <img id="header-img" alt="Familiedag" class="w-full h-full object-cover object-center">
+                <div id="header-photo" class="w-[506px] h-[506px] overflow-hidden relative" style="clip-path:url(#shape-sunny)">
+                    <img id="header-img" alt="Familiedag" class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700">
+                    <img id="header-img-next" alt="" class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-700">
                     <div class="absolute inset-0" style="background:#6B3A6E;mix-blend-mode:color;opacity:.45"></div>
                 </div>
             </div>
@@ -329,10 +330,12 @@
         ];
 
         const el = document.getElementById('header-photo');
-        const img = document.getElementById('header-img');
+        const imgA = document.getElementById('header-img');
+        const imgB = document.getElementById('header-img-next');
         const photos = ['img/IMG_1053.jpeg','img/IMG_1106.jpeg','img/IMG_1119.jpeg','img/7e2bc450-0a19-4263-b7e4-d28e10032c22.jpg'];
         let photoIdx = Math.floor(Math.random() * photos.length);
-        img.src = photos[photoIdx];
+        let showingA = true;
+        imgA.src = photos[photoIdx];
 
         let current = Math.floor(Math.random() * shapes.length);
         let next = (current + 1) % shapes.length;
@@ -368,7 +371,10 @@
                     current = next;
                     next = (current + 1) % shapes.length;
                     photoIdx = (photoIdx + 1) % photos.length;
-                    img.src = photos[photoIdx];
+                    // Crossfade photos
+                    if (showingA) { imgB.src = photos[photoIdx]; imgB.style.opacity = '1'; imgA.style.opacity = '0'; }
+                    else { imgA.src = photos[photoIdx]; imgA.style.opacity = '1'; imgB.style.opacity = '0'; }
+                    showingA = !showingA;
                     paused = PAUSE;
                 }
                 el.style.clipPath = toPolygon(lerp(shapes[current], shapes[next], ease(progress)));
@@ -435,7 +441,7 @@
     </div>
 
     <!-- Big CTA -->
-    <div id="fab-add" class="fixed bottom-6 left-0 right-0 z-40 px-5">
+    <div id="fab-add" class="fixed bottom-6 left-0 right-0 z-40" style="padding-left:20px;padding-right:20px">
         <button onclick="startNewOrder()" class="w-full max-w-lg mx-auto h-16 rounded-full text-white text-lg font-light flex items-center justify-center gap-2 transition-transform active:scale-[.97]" style="background:#6B3A6E;box-shadow:0 4px 20px rgba(59,26,62,.35);display:flex;letter-spacing:.02em">
             Aanmelden
         </button>
