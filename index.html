@@ -46,6 +46,9 @@
             --on-primary-cont: #3B1A3E;
         }
 
+        html {
+            background: #E8DEFF;
+        }
         body {
             background: var(--surface);
             min-height: 100dvh;
@@ -81,31 +84,40 @@
             overflow: hidden;
         }
 
-        /* === SEGMENTED TABS === */
-        .tabs-pill {
-            display: flex;
-            background: rgba(107,58,110,.08);
-            border-radius: 9999px;
-            padding: 3px;
-            gap: 2px;
-        }
-        .seg-btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 500;
+        /* === NAV BUTTONS (pill chips) === */
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 14px;
+            font-size: 13px;
+            white-space: nowrap;
+            font-weight: 300;
+            letter-spacing: .02em;
             border-radius: 9999px;
             transition: all .2s ease;
+            background: rgba(107,58,110,.08);
             color: #6B3A6E;
-            opacity: .5;
         }
-        .seg-btn.active {
-            background: white;
-            color: #3B1A3E;
-            font-weight: 700;
-            opacity: 1;
-            box-shadow: 0 1px 4px rgba(59,26,62,.08);
+        .nav-btn.active {
+            background: #6B3A6E;
+            color: white;
+        }
+        .nav-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,.25);
+        }
+        .nav-btn:not(.active) .nav-count {
+            background: rgba(107,58,110,.12);
+            color: #6B3A6E;
         }
 
         /* === CARDS — white, 20px radius, soft shadow === */
@@ -298,13 +310,18 @@
                 </div>
             </div>
 
-            <!-- Tabs + info button -->
-            <nav id="main-nav" class="pb-4 flex items-center gap-2">
-                <div class="tabs-pill flex-1">
-                    <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="seg-btn active">Aanmelden</button>
-                    <button onclick="showTab('overzicht')" id="tab-overzicht" class="seg-btn">Overzicht</button>
-                </div>
-                <button onclick="showTab('info')" id="tab-info" class="rounded-full flex items-center justify-center shrink-0 transition-all gap-1.5 px-4" style="background:#6B3A6E;color:white;height:46px"><span class="material-symbols-rounded" style="font-size:18px">info</span><span class="text-sm font-light">Info</span></button>
+            <!-- Navigation buttons -->
+            <nav id="main-nav" class="pb-4 flex items-center justify-center gap-2" style="margin-top:-16px;position:relative;z-index:5">
+                <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="nav-btn active">
+                    Aanmeldingen <span id="nav-count" class="nav-count">0</span>
+                </button>
+                <button onclick="showTab('overzicht')" id="tab-overzicht" class="nav-btn">
+                    Overzicht
+                </button>
+                <button onclick="showTab('info')" id="tab-info" class="nav-btn">
+                    <span class="material-symbols-rounded" style="font-size:18px">info</span>
+                    Info
+                </button>
             </nav>
         </div>
     </div>
@@ -393,18 +410,15 @@
     <!-- ===== CONTENT ===== -->
     <div id="content-area">
 
-        <!-- TAB 1: AANMELDEN -->
-        <main id="view-aanmelden" class="max-w-lg mx-auto px-5 pt-6 pb-40">
-            <div id="orders-container" class="space-y-3 mb-4"></div>
-            <div id="empty-state" class="text-center pt-4 pb-24 fade-in">
-                <div class="w-20 h-20 mx-auto mb-5 empty-state-icon flex items-center justify-center" style="clip-path:url(#shape-4cookie)"><span class="material-symbols-rounded" style="font-size:40px;color:#6B3A6E">restaurant</span></div>
-                <p class="ts-title-lg mb-1.5" style="color:var(--primary-dim)">De tafel is gedekt!</p>
-                <p class="ts-body-sm max-w-[260px] mx-auto" style="color:var(--on-surface-var)">Meld je gezin aan en kies alvast wat lekkers.</p>
-            </div>
+        <!-- TAB 1: AANMELDEN (clean, alleen de CTA) -->
+        <main id="view-aanmelden" class="max-w-lg mx-auto px-5 pb-40 flex items-center justify-center" style="min-height:30vh">
         </main>
 
-        <!-- TAB 2: OVERZICHT -->
+        <!-- TAB 2: OVERZICHT (gezinnen + samenvatting + excel) -->
         <main id="view-overzicht" class="max-w-lg mx-auto px-5 pt-6 pb-40 hidden">
+            <!-- Gezinnen die aangemeld zijn -->
+            <div id="orders-container" class="space-y-3 mb-5"></div>
+
             <div id="restaurant-empty" class="text-center py-10 fade-in">
                 <div class="w-20 h-20 mx-auto mb-5 empty-state-icon flex items-center justify-center" style="clip-path:url(#shape-6cookie)"><span class="material-symbols-rounded" style="font-size:40px;color:#6B3A6E">list_alt</span></div>
                 <p class="ts-title-lg mb-1.5" style="color:var(--on-surface)">Nog geen aanmeldingen</p>

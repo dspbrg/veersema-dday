@@ -39,20 +39,25 @@ const ALL_ITEMS=[...MENU.lunch.adult,...MENU.lunch.kids,...MENU.hoofdgerecht.adu
 
 let formState={familyName:'',persons:[]},currentStep=1,currentPersonIndex=0,personIdCounter=0,editingOrderIndex=-1,lastDeleted=null,deleteTimer=null;
 
-document.addEventListener('DOMContentLoaded',()=>{renderOverview();renderRestaurant()});
+document.addEventListener('DOMContentLoaded',()=>{renderOverview();renderRestaurant();updateNavCount()});
 
 // === TABS ===
 function showTab(t){
     document.getElementById('view-aanmelden').classList.toggle('hidden',t!=='aanmelden');
     document.getElementById('view-overzicht').classList.toggle('hidden',t!=='overzicht');
     document.getElementById('view-info').classList.toggle('hidden',t!=='info');
-    document.getElementById('tab-aanmelden').className=`seg-btn ${t==='aanmelden'?'active':''}`;
-    document.getElementById('tab-overzicht').className=`seg-btn ${t==='overzicht'?'active':''}`;
-    const infoBtn=document.getElementById('tab-info');
-    if(infoBtn){infoBtn.style.background=t==='info'?'white':'#6B3A6E';infoBtn.style.color=t==='info'?'#6B3A6E':'white'}
+    ['aanmelden','overzicht','info'].forEach(id=>{
+        const btn=document.getElementById('tab-'+id);
+        if(btn)btn.className='nav-btn'+(t===id?' active':'');
+    });
     const fab=document.getElementById('fab-add');
-    if(fab)fab.classList.toggle('hidden',t!=='aanmelden');
-    if(t==='overzicht')renderRestaurant();
+    if(fab)fab.classList.remove('hidden');
+    if(t==='overzicht'){renderOverview();renderRestaurant();}
+    updateNavCount();
+}
+function updateNavCount(){
+    const el=document.getElementById('nav-count');
+    if(el)el.textContent=getOrders().length;
 }
 function toggleInfo(){const c=document.getElementById('info-content'),ch=document.getElementById('info-chevron');c.classList.toggle('hidden');ch.style.transform=c.classList.contains('hidden')?'':'rotate(180deg)'}
 
@@ -229,6 +234,7 @@ async function _loadFromSupabase() {
         _ordersCache = orders;
         renderOverview();
         renderRestaurant();
+        updateNavCount();
     } catch(e) { console.error('[Supabase] Laden mislukt:', e); }
 }
 
