@@ -289,7 +289,7 @@
             <!-- Photo in M3 shape — overlaps title intentionally -->
             <div class="flex justify-center mb-4 relative" style="margin-top:-39px">
                 <div class="absolute -top-2 right-[15%] w-8 h-8 z-10" style="clip-path:url(#shape-6cookie);background:#E991C8;opacity:.3"></div>
-                <div id="header-photo" class="w-[506px] h-[506px] overflow-hidden relative" style="clip-path:url(#shape-sunny)">
+                <div id="header-photo" class="w-full overflow-hidden relative" style="clip-path:url(#shape-sunny);aspect-ratio:1;max-width:380px">
                     <img id="header-img" alt="Familiedag" class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700">
                     <img id="header-img-next" alt="" class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-700">
                     <div class="absolute inset-0" style="background:#6B3A6E;mix-blend-mode:color;opacity:.45"></div>
@@ -315,8 +315,9 @@
         // M3 shape points (72 segments each, polar: r = R + A*cos(N*theta))
         function makeShape(N, R, A) {
             const pts = [];
-            for (let i = 0; i <= 72; i++) {
-                const t = (i / 72) * Math.PI * 2;
+            const STEPS = 144;
+            for (let i = 0; i <= STEPS; i++) {
+                const t = (i / STEPS) * Math.PI * 2;
                 const r = R + A * Math.cos(N * t);
                 pts.push([0.5 + r * Math.cos(t), 0.5 + r * Math.sin(t)]);
             }
@@ -364,17 +365,19 @@
 
             if (paused > 0) {
                 paused -= dt;
+                if (paused <= 0) {
+                    // Start photo crossfade at same moment as morph starts
+                    photoIdx = (photoIdx + 1) % photos.length;
+                    if (showingA) { imgB.src = photos[photoIdx]; imgB.style.opacity = '1'; imgA.style.opacity = '0'; }
+                    else { imgA.src = photos[photoIdx]; imgA.style.opacity = '1'; imgB.style.opacity = '0'; }
+                    showingA = !showingA;
+                }
             } else {
                 progress += dt / DURATION;
                 if (progress >= 1) {
                     progress = 0;
                     current = next;
                     next = (current + 1) % shapes.length;
-                    photoIdx = (photoIdx + 1) % photos.length;
-                    // Crossfade photos
-                    if (showingA) { imgB.src = photos[photoIdx]; imgB.style.opacity = '1'; imgA.style.opacity = '0'; }
-                    else { imgA.src = photos[photoIdx]; imgA.style.opacity = '1'; imgB.style.opacity = '0'; }
-                    showingA = !showingA;
                     paused = PAUSE;
                 }
                 el.style.clipPath = toPolygon(lerp(shapes[current], shapes[next], ease(progress)));
