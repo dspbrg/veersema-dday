@@ -418,7 +418,31 @@
     </script>
 
     <!-- ===== CONTENT ===== -->
-    <div id="content-area">
+    <!-- Parallax floating shapes -->
+    <div id="parallax-shapes" style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden">
+        <div class="pshape" data-speed="0.3" style="top:15%;left:8%;width:28px;height:28px;clip-path:url(#shape-sunny);background:#F5B731;opacity:.15"></div>
+        <div class="pshape" data-speed="0.2" style="top:35%;right:6%;width:22px;height:22px;clip-path:url(#shape-4cookie);background:#E991C8;opacity:.12"></div>
+        <div class="pshape" data-speed="0.4" style="top:55%;left:12%;width:18px;height:18px;clip-path:url(#shape-6cookie);background:#D4C8EF;opacity:.18"></div>
+        <div class="pshape" data-speed="0.15" style="top:70%;right:15%;width:32px;height:32px;clip-path:url(#shape-7cookie);background:#F5B731;opacity:.1"></div>
+        <div class="pshape" data-speed="0.35" style="top:85%;left:5%;width:24px;height:24px;clip-path:url(#shape-sunny);background:#E991C8;opacity:.13"></div>
+        <div class="pshape" data-speed="0.25" style="top:45%;left:75%;width:20px;height:20px;clip-path:url(#shape-4cookie);background:#C0AAEE;opacity:.14"></div>
+        <div class="pshape" data-speed="0.5" style="top:95%;right:25%;width:16px;height:16px;clip-path:url(#shape-sunny);background:#D4C8EF;opacity:.16"></div>
+    </div>
+    <script>
+    (function(){
+        const shapes=document.querySelectorAll('.pshape');
+        const origins=Array.from(shapes).map(s=>parseFloat(s.style.top));
+        window.addEventListener('scroll',()=>{
+            const sy=window.scrollY;
+            shapes.forEach((s,i)=>{
+                const speed=parseFloat(s.dataset.speed);
+                s.style.transform=`translateY(${-sy*speed}px)`;
+            });
+        },{passive:true});
+    })();
+    </script>
+
+    <div id="content-area" style="position:relative;z-index:1">
 
         <!-- TAB 1: AANMELDEN (clean, alleen de CTA) -->
         <main id="view-aanmelden" class="max-w-lg mx-auto px-5 pb-40 flex items-center justify-center" style="min-height:30vh">
