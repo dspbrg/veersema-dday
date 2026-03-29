@@ -43,8 +43,10 @@ document.addEventListener('DOMContentLoaded',()=>{renderOverview();renderRestaur
 
 // === TABS ===
 function showTab(t){
-    document.getElementById('view-aanmelden').classList.toggle('hidden',t!=='aanmelden');
-    document.getElementById('view-overzicht').classList.toggle('hidden',t!=='overzicht');
+    // "aanmelden" tab shows the orders list (same as overzicht content)
+    const showOrders = t==='aanmelden'||t==='overzicht';
+    document.getElementById('view-aanmelden').classList.add('hidden');
+    document.getElementById('view-overzicht').classList.toggle('hidden',!showOrders);
     document.getElementById('view-info').classList.toggle('hidden',t!=='info');
     ['aanmelden','overzicht','info'].forEach(id=>{
         const btn=document.getElementById('tab-'+id);
@@ -52,7 +54,7 @@ function showTab(t){
     });
     const fab=document.getElementById('fab-add');
     if(fab)fab.classList.remove('hidden');
-    if(t==='overzicht'){renderOverview();renderRestaurant();}
+    if(showOrders){renderOverview();renderRestaurant();}
     updateNavCount();
 }
 function updateNavCount(){
