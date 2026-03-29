@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Day Veersema</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <style>
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: {
+                    lav:{50:'#F3EEFF',100:'#E8DEFF',200:'#D4C8EF',300:'#C0AAEE',400:'#A98ADB',500:'#8B6BBF',600:'#7049A8',700:'#5C3891',800:'#6B3A6E',900:'#3B1A3E'},
+                    rose:{50:'#FFF5FC',100:'#FFE8F7',200:'#FFD0EE',300:'#FAADE0',400:'#E991C8',500:'#D474AE'},
+                    pur:{DEFAULT:'#6B3A6E',light:'#8B5A8E',dark:'#4A2050'},
+                    sun:{DEFAULT:'#F5B731',light:'#FFD770'},
+                    cloud:'#FEFCE8',
+                },
+                fontFamily:{sans:['Inter','-apple-system','BlinkMacSystemFont','sans-serif']},
+            }}
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+        /* === DESIGN TOKENS === */
+        :root {
+            --surface:     #F3EEFF;
+            --on-surface:  #1D1A2B;
+            --on-surface-var: #5C5470;
+            --outline:     #D4C8EF;
+            --primary:     #6B3A6E;
+            --primary-dim: #3B1A3E;
+            --primary-cont:#E8DEFF;
+            --on-primary-cont: #3B1A3E;
+        }
+
+        body {
+            background: var(--surface);
+            min-height: 100dvh;
+            color: var(--on-surface);
+        }
+
+        /* === ANIMATION === */
+        .fade-in { animation: fadeIn .3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* === TYPOGRAPHY (3 sizes + small label) === */
+        .ts-display-sm  { font-size: 2.25rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+        .ts-title-lg    { font-size: 1.125rem; font-weight: 700; line-height: 1.3; }
+        .ts-title-md    { font-size: 1rem; font-weight: 600; line-height: 1.35; }
+        .ts-title-sm    { font-size: 0.875rem; font-weight: 600; line-height: 1.4; }
+        .ts-label-lg    { font-size: 0.875rem; font-weight: 600; line-height: 1.4; }
+        .ts-label-md    { font-size: 0.8125rem; font-weight: 600; line-height: 1.4; }
+        .ts-label-sm    { font-size: 0.75rem; font-weight: 500; line-height: 1.4; }
+        .ts-body-md     { font-size: 0.875rem; font-weight: 400; line-height: 1.5; }
+        .ts-body-sm     { font-size: 0.8125rem; font-weight: 400; line-height: 1.5; }
+        .section-header { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--on-surface-var); }
+        .text-surf-on   { color: var(--on-surface); }
+        .text-surf-onvar{ color: var(--on-surface-var); }
+
+        /* === M3 CLIP-PATH SHAPES === */
+        .shape-photo { width: 56px; height: 56px; clip-path: url(#shape-clip); overflow: hidden; }
+        .deco-shape  { position: absolute; pointer-events: none; }
+
+        /* === HEADER — lavender surface, not dark === */
+        .app-header {
+            background: #E8DEFF;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* === SEGMENTED TABS === */
+        .tabs-pill {
+            display: flex;
+            background: rgba(107,58,110,.08);
+            border-radius: 9999px;
+            padding: 3px;
+            gap: 2px;
+        }
+        .seg-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 9999px;
+            transition: all .2s ease;
+            color: #6B3A6E;
+            opacity: .5;
+        }
+        .seg-btn.active {
+            background: white;
+            color: #3B1A3E;
+            font-weight: 700;
+            opacity: 1;
+            box-shadow: 0 1px 4px rgba(59,26,62,.08);
+        }
+
+        /* === CARDS — white, 20px radius, soft shadow === */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 1px 4px rgba(59,26,62,.06);
+        }
+        .order-card {
+            transition: transform .15s ease;
+            cursor: pointer;
+        }
+        .order-card:active { transform: scale(.985); }
+
+        /* === RADIO / CHECK CARDS === */
+        .radio-card label {
+            transition: all .15s ease;
+            border: 1.5px solid var(--outline);
+            border-radius: 20px;
+            background: white;
+        }
+        .radio-card label:active { transform: scale(.98); }
+        .radio-card input:checked+label {
+            border-color: var(--primary);
+            background: #F3EEFF;
+        }
+        .radio-card input:checked+label .dot {
+            background: var(--primary);
+            box-shadow: inset 0 0 0 3px white;
+            border-color: var(--primary);
+        }
+        .check-card label {
+            transition: all .15s ease;
+            border: 1.5px solid var(--outline);
+            border-radius: 20px;
+            background: white;
+        }
+        .check-card label:active { transform: scale(.98); }
+        .check-card input:checked+label {
+            border-color: var(--primary);
+            background: #F3EEFF;
+        }
+        .check-card input:checked+label .check-box { background: var(--primary); border-color: var(--primary); }
+        .check-card input:checked+label .check-box svg { display: block; }
+
+        /* === BUTTONS — flat, no gradients === */
+        .btn-filled {
+            background: #6B3A6E;
+            color: white;
+            border-radius: 9999px;
+            transition: all .15s ease;
+            border: none;
+            font-weight: 300;
+            letter-spacing: .02em;
+        }
+        .btn-filled:active { transform: scale(.97); }
+        .btn-filled:disabled { background: #E8DEFF; color: #A98ADB; transform: none; }
+        .btn-tonal {
+            background: var(--primary-cont);
+            color: var(--on-primary-cont);
+            border-radius: 9999px;
+            transition: all .15s ease;
+            font-weight: 300;
+            letter-spacing: .02em;
+        }
+        .btn-outlined {
+            background: transparent;
+            border: 1.5px solid var(--outline);
+            color: var(--primary);
+            border-radius: 9999px;
+            transition: all .15s ease;
+            font-weight: 300;
+            letter-spacing: .02em;
+        }
+
+        /* === FAB === */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: max(16px, calc((100vw - 32rem)/2 + 16px));
+            height: 56px;
+            padding: 0 20px;
+            border-radius: 16px;
+            background: #6B3A6E;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(59,26,62,.25);
+            z-index: 40;
+            transition: transform .15s ease;
+        }
+        .fab:active { transform: scale(.95); }
+
+        /* === PERSON CARD === */
+        .person-card {
+            border-radius: 20px;
+            background: white;
+            border-left: 4px solid #E991C8;
+        }
+        .person-card.kind { border-left-color: #A98ADB; }
+
+        /* === INPUTS — consistent 20px radius === */
+        input[type="text"], textarea, select {
+            font-size: 16px !important;
+            border-radius: 20px;
+        }
+
+        /* === STEP INDICATOR === */
+        .step-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all .2s ease;
+        }
+        .step-dot.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(107,58,110,.12);
+        }
+        .step-dot.done    { background: #8B5A8E; color: white; }
+        .step-dot.upcoming { background: var(--primary-cont); color: #A98ADB; }
+        .step-line         { height: 2px; flex: 1; border-radius: 2px; transition: background .2s ease; }
+        .step-line.done    { background: #8B5A8E; }
+        .step-line.upcoming { background: var(--primary-cont); }
+
+        /* === TOAST === */
+        #toast {
+            background: rgba(59,26,62,.92);
+            border-radius: 9999px;
+        }
+
+        /* === INFO PANEL === */
+        .info-panel {
+            background: rgba(255,255,255,.5);
+            border-radius: 20px;
+        }
+
+        /* === STAT CARD === */
+        .stat-card {
+            background: #FFE8F7;
+            border-radius: 20px;
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state-icon {
+            background: #FFE8F7;
+        }
+    </style>
+</head>
+<body class="font-sans" style="color:#1D1A2B">
+
+    <!-- M3 Shape definitions -->
+    <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+        <defs>
+            <clipPath id="shape-4cookie" clipPathUnits="objectBoundingBox">
+                <path d="M0.980,0.500 L0.973,0.541 L0.954,0.580 L0.925,0.614 L0.889,0.642 L0.850,0.663 L0.812,0.680 L0.777,0.694 L0.749,0.709 L0.726,0.726 L0.709,0.749 L0.694,0.777 L0.680,0.812 L0.663,0.850 L0.642,0.889 L0.614,0.925 L0.580,0.954 L0.541,0.973 L0.500,0.980 L0.459,0.973 L0.420,0.954 L0.386,0.925 L0.358,0.889 L0.337,0.850 L0.320,0.812 L0.306,0.777 L0.291,0.749 L0.274,0.726 L0.251,0.709 L0.223,0.694 L0.188,0.680 L0.150,0.663 L0.111,0.642 L0.075,0.614 L0.046,0.580 L0.027,0.541 L0.020,0.500 L0.027,0.459 L0.046,0.420 L0.075,0.386 L0.111,0.358 L0.150,0.337 L0.188,0.320 L0.223,0.306 L0.251,0.291 L0.274,0.274 L0.291,0.251 L0.306,0.223 L0.320,0.188 L0.337,0.150 L0.358,0.111 L0.386,0.075 L0.420,0.046 L0.459,0.027 L0.500,0.020 L0.541,0.027 L0.580,0.046 L0.614,0.075 L0.642,0.111 L0.663,0.150 L0.680,0.188 L0.694,0.223 L0.709,0.251 L0.726,0.274 L0.749,0.291 L0.777,0.306 L0.812,0.320 L0.850,0.337 L0.889,0.358 L0.925,0.386 L0.954,0.420 L0.973,0.459 Z"/>
+            </clipPath>
+            <clipPath id="shape-6cookie" clipPathUnits="objectBoundingBox">
+                <path d="M0.980,0.500 L0.970,0.541 L0.943,0.578 L0.906,0.609 L0.866,0.633 L0.834,0.656 L0.812,0.680 L0.801,0.711 L0.799,0.751 L0.797,0.797 L0.789,0.845 L0.771,0.887 L0.740,0.916 L0.699,0.928 L0.654,0.923 L0.609,0.906 L0.568,0.884 L0.532,0.867 L0.500,0.860 L0.468,0.867 L0.432,0.884 L0.391,0.906 L0.346,0.923 L0.301,0.928 L0.260,0.916 L0.229,0.887 L0.211,0.845 L0.203,0.797 L0.201,0.751 L0.199,0.711 L0.188,0.680 L0.166,0.656 L0.134,0.633 L0.094,0.609 L0.057,0.578 L0.030,0.541 L0.020,0.500 L0.030,0.459 L0.057,0.422 L0.094,0.391 L0.134,0.367 L0.166,0.344 L0.188,0.320 L0.199,0.289 L0.201,0.249 L0.203,0.203 L0.211,0.155 L0.229,0.113 L0.260,0.084 L0.301,0.072 L0.346,0.077 L0.391,0.094 L0.432,0.116 L0.468,0.133 L0.500,0.140 L0.532,0.133 L0.568,0.116 L0.609,0.094 L0.654,0.077 L0.699,0.072 L0.740,0.084 L0.771,0.113 L0.789,0.155 L0.797,0.203 L0.799,0.249 L0.801,0.289 L0.812,0.320 L0.834,0.344 L0.866,0.367 L0.906,0.391 L0.943,0.422 L0.970,0.459 Z"/>
+            </clipPath>
+            <clipPath id="shape-7cookie" clipPathUnits="objectBoundingBox">
+                <path d="M0.970,0.500 L0.959,0.540 L0.930,0.576 L0.893,0.605 L0.859,0.631 L0.836,0.656 L0.826,0.688 L0.827,0.729 L0.828,0.776 L0.822,0.822 L0.802,0.859 L0.767,0.881 L0.723,0.885 L0.676,0.877 L0.633,0.864 L0.596,0.859 L0.565,0.867 L0.534,0.890 L0.500,0.920 L0.461,0.947 L0.419,0.960 L0.379,0.952 L0.345,0.925 L0.321,0.885 L0.303,0.842 L0.285,0.807 L0.262,0.784 L0.228,0.772 L0.185,0.764 L0.139,0.753 L0.099,0.732 L0.074,0.699 L0.069,0.657 L0.082,0.612 L0.103,0.570 L0.122,0.533 L0.130,0.500 L0.122,0.467 L0.103,0.430 L0.082,0.388 L0.069,0.343 L0.074,0.301 L0.099,0.268 L0.139,0.247 L0.185,0.236 L0.228,0.228 L0.262,0.216 L0.285,0.193 L0.302,0.158 L0.321,0.115 L0.345,0.075 L0.379,0.048 L0.419,0.040 L0.461,0.053 L0.500,0.080 L0.534,0.110 L0.565,0.133 L0.596,0.141 L0.633,0.136 L0.676,0.123 L0.723,0.115 L0.767,0.119 L0.802,0.141 L0.822,0.178 L0.828,0.224 L0.827,0.271 L0.826,0.312 L0.836,0.344 L0.859,0.369 L0.893,0.395 L0.930,0.424 L0.959,0.460 Z"/>
+            </clipPath>
+            <clipPath id="shape-sunny" clipPathUnits="objectBoundingBox">
+                <path d="M0.980,0.500 L0.955,0.540 L0.891,0.569 L0.819,0.585 L0.769,0.598 L0.759,0.621 L0.786,0.665 L0.826,0.728 L0.850,0.793 L0.839,0.839 L0.793,0.850 L0.728,0.826 L0.665,0.786 L0.621,0.759 L0.598,0.769 L0.585,0.819 L0.569,0.891 L0.540,0.955 L0.500,0.980 L0.460,0.955 L0.431,0.891 L0.415,0.819 L0.402,0.769 L0.379,0.759 L0.335,0.786 L0.272,0.826 L0.207,0.850 L0.161,0.839 L0.150,0.793 L0.174,0.728 L0.214,0.665 L0.241,0.621 L0.231,0.598 L0.181,0.585 L0.109,0.569 L0.045,0.540 L0.020,0.500 L0.045,0.460 L0.109,0.431 L0.181,0.415 L0.231,0.402 L0.241,0.379 L0.214,0.335 L0.174,0.272 L0.150,0.207 L0.161,0.161 L0.207,0.150 L0.272,0.174 L0.335,0.214 L0.379,0.241 L0.402,0.231 L0.415,0.181 L0.431,0.109 L0.460,0.045 L0.500,0.020 L0.540,0.045 L0.569,0.109 L0.585,0.181 L0.598,0.231 L0.621,0.241 L0.665,0.214 L0.728,0.174 L0.793,0.150 L0.839,0.161 L0.850,0.207 L0.826,0.272 L0.786,0.335 L0.759,0.379 L0.769,0.402 L0.819,0.415 L0.891,0.431 L0.955,0.460 Z"/>
+            </clipPath>
+        </defs>
+    </svg>
+
+    <!-- ===== HEADER ===== -->
+    <div class="app-header" id="app-header">
+        <div class="max-w-lg mx-auto px-5">
+            <!-- Huge title — overlaps photo -->
+            <h1 class="pt-8 relative z-10" style="font-family:'Inter',sans-serif;font-weight:300;color:#3B1A3E;font-size:4rem;line-height:.95;letter-spacing:-.03em;margin-bottom:-18px">Veersema<br>D-day 19/4</h1>
+
+            <!-- Photo in M3 shape — overlaps title intentionally -->
+            <div class="flex justify-center mb-4 relative" style="margin-top:-24px">
+                <div class="absolute -top-2 right-[15%] w-8 h-8 z-10" style="clip-path:url(#shape-6cookie);background:#E991C8;opacity:.3"></div>
+                <div id="header-photo" class="w-[440px] h-[440px] overflow-hidden relative" style="clip-path:url(#shape-sunny)">
+                    <img id="header-img" alt="Familiedag" class="w-full h-full object-cover object-center">
+                    <div class="absolute inset-0" style="background:#6B3A6E;mix-blend-mode:color;opacity:.45"></div>
+                </div>
+            </div>
+
+            <!-- Tabs + info button -->
+            <nav id="main-nav" class="pb-4 flex items-center gap-2">
+                <div class="tabs-pill flex-1">
+                    <button onclick="showTab('aanmelden')" id="tab-aanmelden" class="seg-btn active">Aanmelden</button>
+                    <button onclick="showTab('overzicht')" id="tab-overzicht" class="seg-btn">Overzicht</button>
+                </div>
+                <button onclick="showTab('info')" id="tab-info" class="rounded-full flex items-center justify-center shrink-0 transition-all gap-1 px-4" style="background:#6B3A6E;color:white;height:40px"><span class="material-symbols-rounded" style="font-size:18px">info</span><span class="text-sm font-light">Info</span></button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Clean divider instead of gradient fade -->
+    <div id="header-fade" aria-hidden="true"></div>
+
+    <script>
+    (function(){
+        // M3 shape points (72 segments each, polar: r = R + A*cos(N*theta))
+        function makeShape(N, R, A) {
+            const pts = [];
+            for (let i = 0; i <= 72; i++) {
+                const t = (i / 72) * Math.PI * 2;
+                const r = R + A * Math.cos(N * t);
+                pts.push([0.5 + r * Math.cos(t), 0.5 + r * Math.sin(t)]);
+            }
+            return pts;
+        }
+        const shapes = [
+            makeShape(4, 0.40, 0.08),  // 4-cookie
+            makeShape(6, 0.42, 0.06),  // 6-cookie
+            makeShape(7, 0.42, 0.05),  // 7-cookie
+            makeShape(8, 0.38, 0.10),  // sunny
+        ];
+
+        const el = document.getElementById('header-photo');
+        const img = document.getElementById('header-img');
+        const photos = ['img/IMG_1053.jpeg','img/IMG_1106.jpeg','img/IMG_1119.jpeg','img/7e2bc450-0a19-4263-b7e4-d28e10032c22.jpg'];
+        let photoIdx = Math.floor(Math.random() * photos.length);
+        img.src = photos[photoIdx];
+
+        let current = Math.floor(Math.random() * shapes.length);
+        let next = (current + 1) % shapes.length;
+        let progress = 0;
+        const DURATION = 600;
+        const PAUSE = 3500;
+        let paused = PAUSE;
+
+        function toPolygon(pts) {
+            return 'polygon(' + pts.map(p => (p[0]*100).toFixed(1)+'% '+(p[1]*100).toFixed(1)+'%').join(', ') + ')';
+        }
+
+        function lerp(a, b, t) {
+            return a.map((p, i) => [p[0]+(b[i][0]-p[0])*t, p[1]+(b[i][1]-p[1])*t]);
+        }
+
+        // Smooth easing
+        function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
+
+        let lastTime = performance.now();
+        el.style.clipPath = toPolygon(shapes[current]);
+
+        function animate(now) {
+            const dt = now - lastTime;
+            lastTime = now;
+
+            if (paused > 0) {
+                paused -= dt;
+            } else {
+                progress += dt / DURATION;
+                if (progress >= 1) {
+                    progress = 0;
+                    current = next;
+                    next = (current + 1) % shapes.length;
+                    photoIdx = (photoIdx + 1) % photos.length;
+                    img.src = photos[photoIdx];
+                    paused = PAUSE;
+                }
+                el.style.clipPath = toPolygon(lerp(shapes[current], shapes[next], ease(progress)));
+            }
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+    })();
+    </script>
+
+    <!-- ===== CONTENT ===== -->
+    <div id="content-area">
+
+        <!-- TAB 1: AANMELDEN -->
+        <main id="view-aanmelden" class="max-w-lg mx-auto px-5 pt-6 pb-32">
+            <div id="orders-container" class="space-y-3 mb-4"></div>
+            <div id="empty-state" class="text-center py-12 fade-in">
+                <div class="w-20 h-20 mx-auto mb-5 empty-state-icon flex items-center justify-center" style="clip-path:url(#shape-4cookie)"><span class="material-symbols-rounded" style="font-size:40px;color:#6B3A6E">restaurant</span></div>
+                <p class="ts-title-lg mb-1.5" style="color:var(--primary-dim)">De tafel is gedekt!</p>
+                <p class="ts-body-sm max-w-[260px] mx-auto" style="color:var(--on-surface-var)">Meld je gezin aan en kies alvast wat lekkers.</p>
+            </div>
+        </main>
+
+        <!-- TAB 2: OVERZICHT -->
+        <main id="view-overzicht" class="max-w-lg mx-auto px-5 pt-6 pb-32 hidden">
+            <div id="restaurant-empty" class="text-center py-10 fade-in">
+                <div class="w-20 h-20 mx-auto mb-5 empty-state-icon flex items-center justify-center" style="clip-path:url(#shape-6cookie)"><span class="material-symbols-rounded" style="font-size:40px;color:#6B3A6E">list_alt</span></div>
+                <p class="ts-title-lg mb-1.5" style="color:var(--on-surface)">Nog geen aanmeldingen</p>
+                <p class="ts-body-sm max-w-[260px] mx-auto" style="color:var(--on-surface-var)">Zodra gezinnen zich aanmelden verschijnt hier het totaaloverzicht.</p>
+            </div>
+            <div id="summary-section" class="hidden">
+                <div class="card p-6 mb-5"><div id="summary-content"></div></div>
+                <button onclick="downloadExcel()" class="w-full btn-filled font-semibold py-4 flex items-center justify-center gap-2 mb-2">Download als Excel</button>
+                <p class="text-xs text-center mb-6" style="color:#5C5470">Alle bestellingen, gerechten en dieetwensen</p>
+            </div>
+        </main>
+
+        <!-- TAB 3: INFO -->
+        <main id="view-info" class="max-w-lg mx-auto px-5 pt-5 pb-32 hidden">
+            <div class="card p-6 mb-4">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">location_on</span> Locatie</h2>
+                <div class="text-sm space-y-3" style="color:#5C5470">
+                    <p><strong style="color:#3B1A3E">Restaurant Blik & Burgers</strong><br>Filosofenlaantje 9, Zeist</p>
+                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#6B3A6E;vertical-align:middle">local_parking</span> Gratis parkeren bij de P van Slot Zeist<br><span class="text-xs">Voor navigatie: "Brouwerij" Zeist aanhouden</span></p>
+                </div>
+            </div>
+            <div class="card p-6 mb-4">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">attractions</span> Wat is er te doen?</h2>
+                <div class="text-sm space-y-2" style="color:#5C5470">
+                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#8B5A8E;vertical-align:middle">park</span> Groot terras</p>
+                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#8B5A8E;vertical-align:middle">toys</span> Speeltuin voor de kleintjes</p>
+                    <p><span class="material-symbols-rounded" style="font-size:18px;color:#8B5A8E;vertical-align:middle">skateboarding</span> Skatebaan — neem skates, fietsjes of stepjes mee!</p>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:#3B1A3E"><span class="material-symbols-rounded" style="font-size:22px;color:#6B3A6E">schedule</span> Programma</h2>
+                <div class="text-sm space-y-2" style="color:#5C5470">
+                    <div class="flex gap-3"><span class="font-semibold shrink-0" style="color:#6B3A6E">12:00</span><span>Ontvangst met 12 uurtje</span></div>
+                    <div class="flex gap-3"><span class="font-semibold shrink-0" style="color:#6B3A6E">Daarna</span><span>Hoofdgerecht van de groepskaart</span></div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Big CTA -->
+    <div id="fab-add" class="fixed bottom-6 left-0 right-0 z-40 px-5">
+        <button onclick="startNewOrder()" class="w-full max-w-lg mx-auto h-16 rounded-full text-white text-lg font-light flex items-center justify-center gap-2 transition-transform active:scale-[.97]" style="background:#6B3A6E;box-shadow:0 4px 20px rgba(59,26,62,.35);display:flex;letter-spacing:.02em">
+            Aanmelden
+        </button>
+    </div>
+
+    <!-- ===== WIZARD ===== -->
+    <main id="view-form" class="max-w-lg mx-auto px-5 pt-5 pb-36 hidden" style="min-height:80vh">
+        <button onclick="cancelForm()" class="flex items-center gap-1.5 text-sm text-pur font-medium mb-5 py-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Terug
+        </button>
+        <div class="flex items-center mb-8 px-4">
+            <div class="flex flex-col items-center flex-1"><div class="step-dot active" id="step-dot-1">1</div><span class="text-xs mt-2 font-semibold" id="step-label-1" style="color:#6B3A6E">Wie?</span></div>
+            <div class="step-line upcoming" id="step-line-1" style="margin-top:-20px"></div>
+            <div class="flex flex-col items-center flex-1"><div class="step-dot upcoming" id="step-dot-2">2</div><span class="text-xs mt-2" id="step-label-2" style="color:#A98ADB">Bestelling</span></div>
+            <div class="step-line upcoming" id="step-line-2" style="margin-top:-20px"></div>
+            <div class="flex flex-col items-center flex-1"><div class="step-dot upcoming" id="step-dot-3">3</div><span class="text-xs mt-2" id="step-label-3" style="color:#A98ADB">Klaar!</span></div>
+        </div>
+
+        <!-- STAP 1 -->
+        <div id="step-1" class="fade-in">
+            <div class="card p-6 mb-5">
+                <h2 class="text-xl font-bold mb-1" style="color:var(--on-surface)">Wie schuiven er aan?</h2>
+                <p class="ts-body-sm mb-5" style="color:var(--on-surface-var)">Voeg iedereen toe die mee-eet.</p>
+                <label class="block ts-label-lg mb-1.5" style="color:var(--on-surface)">Naam</label>
+                <input type="text" id="family-name" placeholder="bijv. Bas & Martha" class="w-full px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none bg-white mb-5" oninput="updateStep1UI()">
+                <label class="block ts-label-lg mb-2" style="color:var(--on-surface)">Wie eten er mee?</label>
+                <div id="members-list" class="space-y-2 mb-3"><p class="text-sm italic py-2" style="color:#A98ADB">Voeg hieronder de eerste eter toe</p></div>
+                <div class="space-y-2">
+                    <input type="text" id="new-member-name" placeholder="Naam" class="w-full px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none text-sm bg-white" onkeydown="if(event.key==='Enter'){event.preventDefault();addMember()}">
+                    <div class="flex gap-2">
+                        <select id="new-member-type" class="flex-1 px-4 py-3 border-2 border-lav-200 focus:border-pur focus:outline-none text-sm bg-white"><option value="adult">Volwassene</option><option value="kind">Kind</option></select>
+                        <button onclick="addMember()" class="btn-tonal px-6 py-3 text-sm font-bold">Toevoegen</button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="goToStep(2)" id="btn-to-step2" class="w-full btn-filled font-semibold py-4" disabled>Door naar de menukaart</button>
+        </div>
+
+        <!-- STAP 2 -->
+        <div id="step-2" class="hidden">
+            <div class="text-sm mb-2" id="person-counter" style="color:#5C5470"></div>
+            <div class="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1" id="person-tabs" style="-webkit-overflow-scrolling:touch;scrollbar-width:none"></div>
+            <div id="person-menu-container"></div>
+            <div class="flex gap-3 mt-4">
+                <button onclick="prevPerson()" id="btn-prev-person" class="flex-1 btn-outlined font-semibold py-3.5">Vorige</button>
+                <button onclick="nextPersonOrFinish()" class="flex-1 btn-filled font-semibold py-3.5"><span id="btn-next-label">Volgende</span></button>
+            </div>
+        </div>
+
+        <!-- STAP 3 -->
+        <div id="step-3" class="hidden fade-in">
+            <div class="card p-6 mb-5">
+                <h2 class="text-xl font-bold mb-1" style="color:var(--on-surface)">Ziet er goed uit?</h2>
+                <p class="ts-body-sm mb-4" style="color:var(--on-surface-var)">Tik op een naam om aan te passen.</p>
+                <div id="review-content"></div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="goToStep(2)" class="flex-1 btn-outlined font-semibold py-3.5">Wijzigen</button>
+                <button onclick="saveOrder()" class="flex-1 btn-filled font-semibold py-3.5">Opslaan</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 text-white px-6 py-3 text-sm font-medium shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50"></div>
+    <div id="download-section" class="hidden"></div>
+    <script src="js/app.js"></script>
+</body>
+</html>
