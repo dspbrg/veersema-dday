@@ -91,7 +91,7 @@ function renderRestaurant(){
     if(!orders.length)return;
     const allP=orders.flatMap(o=>o.persons),dc={};
     allP.forEach(p=>{if(p.hoofdgerecht){let n=getItemName(p.hoofdgerecht);if(p.vegetarisch)n+=' (vega)';if(p.opBrood)n+=' (op brood)';dc[n]=(dc[n]||0)+1}p.extras.forEach(e=>{const n=getItemName(e);dc[n]=(dc[n]||0)+1})});
-    const row=(n,c)=>`<div class="flex justify-between items-center py-2 px-3.5 rounded-xl even:bg-lav-50"><span class="ts-body-md text-surf-on">${esc(n)}</span><span class="inline-flex items-center justify-center min-w-[28px] h-6 px-2 rounded-full bg-rose-100 text-pur ts-label-md">${c}x</span></div>`;
+    const row=(n,c)=>`<div class="flex justify-between items-center py-3 px-4 rounded-2xl bg-white mb-2"><span class="ts-body-md text-surf-on">${esc(n)}</span><span class="inline-flex items-center justify-center min-w-[32px] h-7 px-3 rounded-full bg-pur text-white ts-label-md font-medium">${c}x</span></div>`;
     const eD=Object.entries(dc).filter(([n])=>ALL_ITEMS.filter(i=>i.id.startsWith('extra-')).some(i=>i.name===n)).sort((a,b)=>b[1]-a[1]);
     const skipNames=ALL_ITEMS.filter(i=>i.id.startsWith('extra-')).map(i=>i.name);
     const hD=Object.entries(dc).filter(([n])=>!skipNames.includes(n.replace(' (vega)','').replace(' (op brood)',''))).sort((a,b)=>b[1]-a[1]);
