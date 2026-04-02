@@ -44,14 +44,14 @@ document.addEventListener('DOMContentLoaded',()=>{loadLockState();renderOverview
 
 function toggleLock(){
     isLocked=!isLocked;
-    if(sb){sb.from('settings').upsert({key:'locked',value:isLocked}).then(()=>{})}
     localStorage.setItem('dday-locked',JSON.stringify(isLocked));
     updateLockUI();
+    if(sb){sb.from('settings').upsert({key:'locked',value:isLocked}).catch(()=>{})}
 }
 function loadLockState(){
-    isLocked=JSON.parse(localStorage.getItem('dday-locked')||'false');
-    if(sb){sb.from('settings').select('value').eq('key','locked').single().then(({data})=>{if(data)isLocked=!!data.value;updateLockUI()})}
+    try{isLocked=JSON.parse(localStorage.getItem('dday-locked')||'false')}catch(e){isLocked=false}
     updateLockUI();
+    if(sb){sb.from('settings').select('value').eq('key','locked').single().then(({data})=>{if(data){isLocked=!!data.value;localStorage.setItem('dday-locked',JSON.stringify(isLocked));updateLockUI()}}).catch(()=>{})}
 }
 function updateLockUI(){
     const tog=document.getElementById('lock-toggle');
