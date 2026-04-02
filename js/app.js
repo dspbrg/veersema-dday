@@ -59,7 +59,7 @@ function updateLockUI(){
     if(tog){tog.style.background=isLocked?'#6B3A6E':'#D4C8EF'}
     if(knob){knob.style.left=isLocked?'26px':'4px'}
     const fab=document.getElementById('fab-add');
-    if(fab)fab.style.display=isLocked?'none':'';
+    if(fab)fab.style.opacity=isLocked?'0.5':'1';
 }
 
 // === TABS ===
@@ -131,7 +131,7 @@ function renderRestaurant(){
 }
 
 // === FORM ===
-function startNewOrder(){editingOrderIndex=-1;formState={familyName:'',persons:[]};personIdCounter=0;openForm()}
+function startNewOrder(){if(isLocked){showToast('Het menu is ingediend, wijzigen is niet meer mogelijk','lock');return}editingOrderIndex=-1;formState={familyName:'',persons:[]};personIdCounter=0;openForm()}
 function editOrder(i){if(isLocked){showToast('Bestellingen zijn vergrendeld','lock');return}const o=getOrders()[i];editingOrderIndex=i;formState={familyName:o.familyName,persons:o.persons.map((p,j)=>({...p,id:j+1}))};personIdCounter=formState.persons.length;openForm()}
 function openForm(){document.getElementById('app-header').classList.add('hidden');document.getElementById('header-fade').classList.add('hidden');document.getElementById('content-area').classList.add('hidden');document.getElementById('fab-add').classList.add('hidden');document.getElementById('view-form').classList.remove('hidden');currentStep=1;currentPersonIndex=0;showStep(1);document.getElementById('family-name').value=formState.familyName;renderMembersList();updateStep1UI();window.scrollTo({top:0,behavior:'smooth'})}
 function cancelForm(){if(formState.persons.length||formState.familyName){if(!confirm('Weet je zeker? Je wijzigingen gaan verloren.'))return}closeForm()}
