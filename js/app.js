@@ -292,7 +292,7 @@ function undoDelete(){if(!lastDeleted)return;clearTimeout(deleteTimer);const ord
 // === EXCEL ===
 function downloadExcel(){
     const orders=getOrders();if(!orders.length)return;const wb=XLSX.utils.book_new();
-    const rows=[];orders.forEach(o=>o.persons.forEach(p=>{let h=p.hoofdgerecht?getItemName(p.hoofdgerecht):'';if(p.vegetarisch)h+=' (veg)';if(p.opBrood)h+=' (op brood)';rows.push({'Naam':o.familyName,'Persoon':p.name,'Volw./Kind':p.isKind?'Kind':'Volwassene','Hoofdgerecht':h,"Extra's":p.extras.map(e=>getItemName(e)).join(', '),'Dieetwensen':p.opmerkingen||''})}));
+    const rows=[];orders.forEach(o=>o.persons.forEach(p=>{let h=p.hoofdgerecht?getItemName(p.hoofdgerecht):'';if(p.vegetarisch)h+=' (veg)';if(p.opBrood)h+=' (op brood)';rows.push({'Naam':o.familyName,'Persoon':p.name,'Volw./Kind':p.isBaby?'Baby':p.isKind?'Kind':'Volwassene','Hoofdgerecht':h,"Extra's":p.extras.map(e=>getItemName(e)).join(', '),'Dieetwensen':p.opmerkingen||''})}));
     const ws1=XLSX.utils.json_to_sheet(rows);ws1['!cols']=[{wch:20},{wch:18},{wch:12},{wch:28},{wch:30},{wch:30},{wch:30}];XLSX.utils.book_append_sheet(wb,ws1,'Bestellingen');
     const allP=orders.flatMap(o=>o.persons);const dc={};allP.forEach(p=>{if(p.lunch){const n=getItemName(p.lunch);dc[n]=(dc[n]||0)+1}if(p.hoofdgerecht){let n=getItemName(p.hoofdgerecht);if(p.vegetarisch)n+=' (veg)';dc[n]=(dc[n]||0)+1}p.extras.forEach(e=>{const n=getItemName(e);dc[n]=(dc[n]||0)+1})});
     const sr=Object.entries(dc).sort((a,b)=>b[1]-a[1]).map(([n,c])=>({'Gerecht':n,'Aantal':c}));sr.push({});sr.push({'Gerecht':'Totaal','Aantal':allP.length});sr.push({'Gerecht':'Volwassenen','Aantal':allP.filter(p=>!p.isKind).length});sr.push({'Gerecht':'Kinderen','Aantal':allP.filter(p=>p.isKind).length});
