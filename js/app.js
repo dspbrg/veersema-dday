@@ -40,7 +40,7 @@ const ALL_ITEMS=[...MENU.lunch.adult,...MENU.lunch.kids,...MENU.hoofdgerecht.adu
 let formState={familyName:'',persons:[]},currentStep=1,currentPersonIndex=0,personIdCounter=0,editingOrderIndex=-1,lastDeleted=null,deleteTimer=null;
 let isLocked=false;
 
-document.addEventListener('DOMContentLoaded',()=>{loadLockState();renderOverview();renderRestaurant();updateNavCount()});
+document.addEventListener('DOMContentLoaded',()=>{loadLockState();loadDeadline();renderOverview();renderRestaurant();updateNavCount()});
 
 function toggleLock(){
     isLocked=!isLocked;
@@ -60,6 +60,34 @@ function updateLockUI(){
     if(knob){knob.style.left=isLocked?'26px':'4px'}
     const fab=document.getElementById('fab-add');
     if(fab)fab.style.opacity=isLocked?'0.5':'1';
+    updateDeadlineUI();
+}
+function saveDeadline(val){
+    localStorage.setItem('dday-deadline',val);
+    if(sb){sb.from('settings').upsert({key:'deadline',value:val}).catch(()=>{})}
+    updateDeadlineUI();
+}
+function loadDeadline(){
+    const local=localStorage.getItem('dday-deadline')||'';
+    const input=document.getElementById('deadline-input');
+    if(input&&local)input.value=local;
+    if(sb){sb.from('settings').select('value').eq('key','deadline').single().then(({data})=>{
+        if(data&&data.value){localStorage.setItem('dday-deadline',data.value);if(input)input.value=data.value;updateDeadlineUI()}
+    }).catch(()=>{})}
+    updateDeadlineUI();
+}
+function updateDeadlineUI(){
+    const val=localStorage.getItem('dday-deadline');
+    const el=document.getElementById('fab-deadline');
+    if(!el)return;
+    if(!val){el.style.display='none';return}
+    const now=new Date();now.setHours(0,0,0,0);
+    const deadline=new Date(val+'T23:59:59');
+    const diff=Math.ceil((deadline-now)/(1000*60*60*24));
+    if(diff<0){el.textContent='Deadline verlopen';el.style.display='';}
+    else if(diff===0){el.textContent='Laatste dag!';el.style.display='';}
+    else if(diff===1){el.textContent='Nog 1 dag';el.style.display='';}
+    else{el.textContent=`Nog ${diff} dagen`;el.style.display='';}
 }
 
 // === TABS ===

@@ -470,7 +470,7 @@
                 <div class="card p-6 mb-5"><div id="summary-content"></div></div>
             </div>
             <div class="card p-5 mb-4">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-4">
                     <div>
                         <div class="ts-title-sm" style="color:#3B1A3E">Bestellingen vergrendelen</div>
                         <div class="ts-body-sm" style="color:#5C5470">Niemand kan meer wijzigen</div>
@@ -478,6 +478,10 @@
                     <div id="lock-toggle" onclick="toggleLock()" class="w-12 h-7 rounded-full relative transition-colors cursor-pointer" style="background:#D4C8EF">
                         <div id="lock-knob" class="w-5 h-5 rounded-full bg-white absolute top-1 left-1 transition-all shadow-sm pointer-events-none"></div>
                     </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label class="ts-body-sm shrink-0" style="color:#5C5470">Deadline</label>
+                    <input type="date" id="deadline-input" onchange="saveDeadline(this.value)" class="flex-1 px-3 py-2 border-2 border-lav-200 focus:border-pur focus:outline-none ts-body-sm bg-white" style="border-radius:12px">
                 </div>
             </div>
             <div class="card p-6 mb-5">
@@ -515,8 +519,9 @@
 
     <!-- Big CTA -->
     <div id="fab-add" class="fixed left-0 right-0 z-40" style="padding-left:20px;padding-right:20px;bottom:max(24px, env(safe-area-inset-bottom, 24px))">
-        <button onclick="startNewOrder()" class="w-full max-w-lg mx-auto h-16 rounded-full text-white text-lg font-light flex items-center justify-center gap-2 transition-transform active:scale-[.97]" style="background:#6B3A6E;box-shadow:0 4px 20px rgba(59,26,62,.35);display:flex;letter-spacing:.02em">
-            Aanmelden
+        <button onclick="startNewOrder()" class="w-full max-w-lg mx-auto rounded-full text-white font-light flex flex-col items-center justify-center transition-transform active:scale-[.97]" style="background:#6B3A6E;box-shadow:0 4px 20px rgba(59,26,62,.35);display:flex;letter-spacing:.02em;padding:14px 20px">
+            <span class="text-lg">Aanmelden</span>
+            <span id="fab-deadline" class="text-xs opacity-70" style="display:none"></span>
         </button>
     </div>
 
