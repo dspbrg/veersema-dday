@@ -38,8 +38,29 @@ const MENU = {
 const ALL_ITEMS=[...MENU.lunch.adult,...MENU.lunch.kids,...MENU.hoofdgerecht.adult.salades.items,...MENU.hoofdgerecht.adult.burgers.items,...MENU.hoofdgerecht.kids,...MENU.extras];
 
 let formState={familyName:'',persons:[]},currentStep=1,currentPersonIndex=0,personIdCounter=0,editingOrderIndex=-1,lastDeleted=null,deleteTimer=null;
+let isLocked=false;
 
-document.addEventListener('DOMContentLoaded',()=>{renderOverview();renderRestaurant();updateNavCount()});
+document.addEventListener('DOMContentLoaded',()=>{loadLockState();renderOverview();renderRestaurant();updateNavCount()});
+
+function toggleLock(){
+    isLocked=!isLocked;
+    if(sb){sb.from('settings').upsert({key:'locked',value:isLocked}).then(()=>{})}
+    localStorage.setItem('dday-locked',JSON.stringify(isLocked));
+    updateLockUI();
+}
+function loadLockState(){
+    isLocked=JSON.parse(localStorage.getItem('dday-locked')||'false');
+    if(sb){sb.from('settings').select('value').eq('key','locked').single().then(({data})=>{if(data)isLocked=!!data.value;updateLockUI()})}
+    updateLockUI();
+}
+function updateLockUI(){
+    const tog=document.getElementById('lock-toggle');
+    const knob=document.getElementById('lock-knob');
+    if(tog){tog.style.background=isLocked?'#6B3A6E':'#D4C8EF'}
+    if(knob){knob.style.left=isLocked?'26px':'4px'}
+    const fab=document.getElementById('fab-add');
+    if(fab)fab.style.display=isLocked?'none':'';
+}
 
 // === TABS ===
 function showTab(t){
@@ -111,7 +132,7 @@ function renderRestaurant(){
 
 // === FORM ===
 function startNewOrder(){editingOrderIndex=-1;formState={familyName:'',persons:[]};personIdCounter=0;openForm()}
-function editOrder(i){const o=getOrders()[i];editingOrderIndex=i;formState={familyName:o.familyName,persons:o.persons.map((p,j)=>({...p,id:j+1}))};personIdCounter=formState.persons.length;openForm()}
+function editOrder(i){if(isLocked){showToast('Bestellingen zijn vergrendeld','lock');return}const o=getOrders()[i];editingOrderIndex=i;formState={familyName:o.familyName,persons:o.persons.map((p,j)=>({...p,id:j+1}))};personIdCounter=formState.persons.length;openForm()}
 function openForm(){document.getElementById('app-header').classList.add('hidden');document.getElementById('header-fade').classList.add('hidden');document.getElementById('content-area').classList.add('hidden');document.getElementById('fab-add').classList.add('hidden');document.getElementById('view-form').classList.remove('hidden');currentStep=1;currentPersonIndex=0;showStep(1);document.getElementById('family-name').value=formState.familyName;renderMembersList();updateStep1UI();window.scrollTo({top:0,behavior:'smooth'})}
 function cancelForm(){if(formState.persons.length||formState.familyName){if(!confirm('Weet je zeker? Je wijzigingen gaan verloren.'))return}closeForm()}
 function closeForm(){document.getElementById('view-form').classList.add('hidden');document.getElementById('app-header').classList.remove('hidden');document.getElementById('header-fade').classList.remove('hidden');document.getElementById('content-area').classList.remove('hidden');document.getElementById('fab-add').classList.remove('hidden');showTab('aanmelden');window.scrollTo({top:0,behavior:'smooth'})}
