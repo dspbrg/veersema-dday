@@ -81,10 +81,13 @@ function updateDeadlineUI(){
     const el=document.getElementById('fab-deadline');
     if(!el)return;
     if(!val){el.style.display='none';return}
+    // Parse as local date parts to avoid timezone issues
+    const parts=val.split('-');
+    const deadline=new Date(+parts[0],+parts[1]-1,+parts[2]);
     const now=new Date();now.setHours(0,0,0,0);
-    const deadline=new Date(val+'T23:59:59');
-    const diff=Math.ceil((deadline-now)/(1000*60*60*24));
-    if(diff<0){el.textContent='Deadline verlopen';el.style.display='';}
+    const diff=Math.round((deadline-now)/(1000*60*60*24));
+    // Auto-lock when deadline has passed
+    if(diff<0){el.textContent='Deadline verlopen';el.style.display='';if(!isLocked){isLocked=true;localStorage.setItem('dday-locked','true');updateLockUI()}}
     else if(diff===0){el.textContent='Laatste dag!';el.style.display='';}
     else if(diff===1){el.textContent='Nog 1 dag';el.style.display='';}
     else{el.textContent=`Nog ${diff} dagen`;el.style.display='';}
