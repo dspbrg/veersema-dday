@@ -243,12 +243,15 @@ async function saveOrders(orders) {
     if (!sb) return;
     _justSaved=true;
     try {
-        await sb.from('orders').delete().neq('id', 0);
+        // Delete then insert sequentially — await each step
+        const {error:delErr} = await sb.from('orders').delete().neq('id', 0);
+        if(delErr) throw delErr;
         if (orders.length) {
             const rows = orders.map(o => ({ family_name: o.familyName, data: o }));
-            await sb.from('orders').insert(rows);
+            const {error:insErr} = await sb.from('orders').insert(rows);
+            if(insErr) throw insErr;
         }
-    } catch(e) { console.error('[Supabase] Schrijven mislukt:', e); }
+    } catch(e) { console.error('[Supabase] Schrijven mislukt:', e); showToast('Opslaan mislukt, probeer opnieuw','error'); }
 }
 
 async function _loadFromSupabase() {
