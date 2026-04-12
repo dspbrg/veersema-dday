@@ -170,7 +170,7 @@ function closeForm(){document.getElementById('view-form').classList.add('hidden'
 
 // === STAP 1 ===
 function addMember(){const ni=document.getElementById('new-member-name'),ts=document.getElementById('new-member-type'),nm=ni.value.trim();if(!nm){showToast('Vul eerst een naam in','touch_app');ni.focus();return}formState.persons.push({id:++personIdCounter,name:nm,isKind:ts.value==='kind',isBaby:ts.value==='baby',lunch:'',hoofdgerecht:'',vegetarisch:false,opBrood:false,extras:[],opmerkingen:''});ni.value='';ni.focus();ts.value='adult';renderMembersList();updateStep1UI()}
-function removeMember(id){formState.persons=formState.persons.filter(p=>p.id!==id);renderMembersList();updateStep1UI()}
+function removeMember(id){const p=formState.persons.find(x=>x.id===id);if(!confirm(`${p?p.name:'Deze persoon'} verwijderen?`))return;formState.persons=formState.persons.filter(p=>p.id!==id);renderMembersList();updateStep1UI()}
 function renderMembersList(){
     const l=document.getElementById('members-list');
     if(!formState.persons.length){l.innerHTML='<p class="ts-body-sm text-surf-onvar/50 italic py-2">Voeg hieronder de eerste eter toe</p>';return}
