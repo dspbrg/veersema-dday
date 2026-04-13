@@ -272,7 +272,7 @@ async function saveOrders(orders) {
     localStorage.setItem('dday-orders', JSON.stringify(orders));
     _ordersCache = orders;
     if (!sb) return;
-    _justSaved=true;
+    _saveUntil=Date.now()+3000;
     try {
         // Delete then insert sequentially — await each step
         const {error:delErr} = await sb.from('orders').delete().neq('id', 0);
@@ -300,11 +300,11 @@ async function _loadFromSupabase() {
 }
 
 let _syncTimer=null;
-let _justSaved=false;
+let _saveUntil=0;
 function _debouncedLoad(){
-    if(_justSaved){_justSaved=false;return}
+    if(Date.now()<_saveUntil)return;
     clearTimeout(_syncTimer);
-    _syncTimer=setTimeout(()=>_loadFromSupabase(),500);
+    _syncTimer=setTimeout(()=>{if(Date.now()<_saveUntil)return;_loadFromSupabase()},500);
 }
 function _initSupabaseRealtime() {
     if (!sb) return;
