@@ -118,7 +118,7 @@ function renderOverview(){
     const re=document.getElementById('restaurant-empty');
     if(!orders.length){c.innerHTML='';if(re)re.classList.remove('hidden');return}
     if(re)re.classList.add('hidden');
-    c.innerHTML=orders.map((o,idx)=>`
+    c.innerHTML=orders.map((o,idx)=>[o,idx]).reverse().map(([o,idx])=>`
         <div class="card order-card px-5 py-4 fade-in" onclick="editOrder(${idx})">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
