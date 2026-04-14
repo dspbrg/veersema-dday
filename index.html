@@ -513,7 +513,20 @@
                     <div class="flex gap-4"><span class="font-medium shrink-0" style="color:#6B3A6E">Lunch</span><span>Bestelling van de groepskaart</span></div>
                 </div>
             </div>
+            <div class="card p-6 mt-3" onclick="document.getElementById('lightbox').style.display='flex'" style="cursor:pointer">
+                <h2 class="text-base font-medium mb-3" style="color:#3B1A3E">Menukaart</h2>
+                <img src="img-anonymous/menukaart.jpg" alt="Menukaart" class="w-full rounded-xl">
+                <p class="text-xs text-center mt-2 font-light" style="color:#A98ADB">Tik om te vergroten</p>
+            </div>
         </main>
+
+        <!-- Lightbox menukaart -->
+        <div id="lightbox" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center" onclick="this.style.display='none'">
+            <button style="position:absolute;top:16px;right:16px;color:#fff;font-size:2rem;background:none;border:none;cursor:pointer;z-index:10000" onclick="document.getElementById('lightbox').style.display='none'">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+            <img src="img-anonymous/menukaart.jpg" alt="Menukaart" style="max-width:95vw;max-height:90vh;object-fit:contain;border-radius:12px">
+        </div>
 
     </div>
 
