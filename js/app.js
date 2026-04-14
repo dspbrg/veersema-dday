@@ -328,7 +328,7 @@ function downloadExcel(){
     const allP=orders.flatMap(o=>o.persons);const dc={};allP.forEach(p=>{if(p.lunch){const n=getItemName(p.lunch);dc[n]=(dc[n]||0)+1}if(p.hoofdgerecht){let n=getItemName(p.hoofdgerecht);if(p.vegetarisch)n+=' (veg)';dc[n]=(dc[n]||0)+1}p.extras.forEach(e=>{const n=getItemName(e);dc[n]=(dc[n]||0)+1})});
     const sr=Object.entries(dc).sort((a,b)=>b[1]-a[1]).map(([n,c])=>({'Gerecht':n,'Aantal':c}));sr.push({});sr.push({'Gerecht':'Totaal','Aantal':allP.length});sr.push({'Gerecht':'Volwassenen','Aantal':allP.filter(p=>!p.isKind).length});sr.push({'Gerecht':'Kinderen','Aantal':allP.filter(p=>p.isKind).length});
     const ws2=XLSX.utils.json_to_sheet(sr);ws2['!cols']=[{wch:35},{wch:12}];XLSX.utils.book_append_sheet(wb,ws2,'Samenvatting');
-    XLSX.writeFile(wb,`Family_Day_${new Date().toISOString().slice(0,10)}.xlsx`);showToast('Excel gedownload!','download');
+    XLSX.writeFile(wb,'Family_Day_23-5.xlsx');showToast('Excel gedownload!','download');
 }
 
 // === HELPERS ===
