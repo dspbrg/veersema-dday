@@ -513,11 +513,21 @@
                     <div class="flex gap-4"><span class="font-medium shrink-0" style="color:#6B3A6E">Lunch</span><span>Bestelling van de groepskaart</span></div>
                 </div>
             </div>
-            <div class="card p-6 mt-3" onclick="document.getElementById('lightbox').style.display='flex'" style="cursor:pointer">
-                <h2 class="text-base font-medium mb-3" style="color:#3B1A3E">Menukaart</h2>
-                <img src="img-anonymous/menukaart.jpg" alt="Menukaart" class="w-full rounded-xl">
-                <p class="text-xs text-center mt-2 font-light" style="color:#A98ADB">Tik om te vergroten</p>
+            <div class="card p-4 mt-3 flex items-center gap-4" onclick="document.getElementById('lightbox').style.display='flex'" style="cursor:pointer">
+                <img src="img-anonymous/menukaart.jpg" alt="Menukaart" class="rounded-lg" style="width:56px;height:56px;object-fit:cover">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5">
+                        <span class="material-symbols-rounded" style="font-size:16px;color:#4CAF50">link</span>
+                        <span class="text-xs font-medium" style="color:#4CAF50">Gekoppeld</span>
+                    </div>
+                    <p class="text-sm font-medium truncate" style="color:#3B1A3E">Menukaart Blik & Burgers</p>
+                    <p class="text-xs font-light" style="color:#A98ADB">Bron voor bestelkaart</p>
+                </div>
+                <span class="material-symbols-rounded" style="font-size:20px;color:#A98ADB">open_in_new</span>
             </div>
+            <button class="w-full text-xs font-light mt-2 py-1.5" style="color:#A98ADB" onclick="event.stopPropagation()">
+                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-3px">link_off</span> Menukaart ontkoppelen
+            </button>
         </main>
 
         <!-- Lightbox menukaart -->
