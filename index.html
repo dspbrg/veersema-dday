@@ -545,13 +545,13 @@
                 <h2 class="text-xl font-bold mb-1" style="color:var(--on-surface)">Wie schuiven er aan?</h2>
                 <p class="ts-body-sm mb-5" style="color:var(--on-surface-var)">Voeg iedereen toe die mee-eet.</p>
                 <label class="block ts-label-lg mb-1.5" style="color:var(--on-surface)">Naam</label>
-                <input type="text" id="family-name" placeholder="bijv. Bas & Martha" class="w-full px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none bg-white mb-5" oninput="updateStep1UI()">
+                <input type="text" id="family-name" placeholder="bijv. Bas & Martha" class="w-full px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none bg-white mb-5" style="border-radius:12px" oninput="updateStep1UI()">
                 <label class="block ts-label-lg mb-2" style="color:var(--on-surface)">Wie eten er mee?</label>
                 <div id="members-list" class="space-y-2 mb-3"><p class="text-sm italic py-2" style="color:#A98ADB">Voeg hieronder de eerste eter toe</p></div>
                 <div class="space-y-2">
-                    <input type="text" id="new-member-name" placeholder="Naam" class="w-full px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none text-sm bg-white" onkeydown="if(event.key==='Enter'){event.preventDefault();addMember()}">
+                    <input type="text" id="new-member-name" placeholder="Naam" class="w-full px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none text-sm bg-white" style="border-radius:12px" onkeydown="if(event.key==='Enter'){event.preventDefault();addMember()}">
                     <div class="flex gap-2">
-                        <select id="new-member-type" class="flex-1 px-4 py-3 border-2 border-lav-200 focus:border-pur focus:outline-none text-sm bg-white"><option value="adult">Volwassene</option><option value="kind">Kind</option><option value="baby">Baby (eet niet mee)</option></select>
+                        <select id="new-member-type" class="flex-1 px-4 py-3.5 border-2 border-lav-200 focus:border-pur focus:outline-none text-sm bg-white" style="border-radius:12px"><option value="adult">Volwassene</option><option value="kind">Kind</option><option value="baby">Baby (eet niet mee)</option></select>
                         <button onclick="addMember()" class="btn-tonal px-6 py-3 text-sm font-bold">Toevoegen</button>
                     </div>
                 </div>
